@@ -546,7 +546,8 @@ function renderMwScreen() {
   const dueSR = allWords.filter(w => {
     const m = mastery[w.id];
     if (!m || m.stage < 3 || !m.masteredDate) return false;
-    const daysSince = Math.floor((Date.now() - m.masteredDate) / 86400000);
+    const baseDate = m.lastReviewDate || m.masteredDate;
+    const daysSince = Math.floor((Date.now() - baseDate) / 86400000);
     return daysSince >= SR_INTERVALS[Math.min(m.reviewCount || 0, SR_INTERVALS.length - 1)];
   }).length;
 
@@ -696,9 +697,9 @@ function renderStatsHome(tab) {
 // ── نسبة الذاكرة (Ebbinghaus R = e^(-t/S)) ──
 function _calcRetention(m) {
   if (!m || m.stage < 3 || !m.masteredDate) return null;
-  // Stability بعد كل مراجعة: [1,3,7,14,30] يوم
   const S = SR_INTERVALS[Math.min(m.reviewCount||0, SR_INTERVALS.length-1)];
-  const daysSince = (Date.now() - m.masteredDate) / 86400000;
+  const baseDate = m.lastReviewDate || m.masteredDate;
+  const daysSince = (Date.now() - baseDate) / 86400000;
   const R = Math.round(100 * Math.exp(-daysSince / S));
   return Math.max(R, 0);
 }
@@ -707,7 +708,8 @@ function _nextReviewDate(m) {
   if (!m || m.stage < 3 || !m.masteredDate) return null;
   const idx = Math.min(m.reviewCount||0, SR_INTERVALS.length-1);
   const days = SR_INTERVALS[idx];
-  const d = new Date(m.masteredDate + days * 86400000);
+  const baseDate = m.lastReviewDate || m.masteredDate;
+  const d = new Date(baseDate + days * 86400000);
   const day = String(d.getDate()).padStart(2,'0');
   const mon = String(d.getMonth()+1).padStart(2,'0');
   return `${day}/${mon}/${d.getFullYear()}`;
@@ -730,7 +732,8 @@ function _renderSRTimeline() {
     const m = mastery[w.id];
     if (!m || m.stage < 3) { inProgress.push({w,m}); return; }
     if ((m.reviewCount||0) >= SR_INTERVALS.length) { sealed.push({w,m}); return; }
-    const daysSince = Math.floor((Date.now() - m.masteredDate) / 86400000);
+    const baseDate = m.lastReviewDate || m.masteredDate;
+    const daysSince = Math.floor((Date.now() - baseDate) / 86400000);
     const needed = SR_INTERVALS[Math.min(m.reviewCount||0, SR_INTERVALS.length-1)];
     if (daysSince >= needed) overdue.push({w,m});
     else if (needed - daysSince <= 1) upcomingToday.push({w,m});
@@ -1421,7 +1424,8 @@ function getDailySession() {
   const dueMastered = allWords.filter(w => {
     const m = mastery[w.id];
     if (!m || m.stage < 3 || !m.masteredDate) return false;
-    const daysSince = Math.floor((Date.now() - m.masteredDate) / 86400000);
+    const baseDate = m.lastReviewDate || m.masteredDate;
+    const daysSince = Math.floor((Date.now() - baseDate) / 86400000);
     return daysSince >= SR_INTERVALS[Math.min(m.reviewCount||0, SR_INTERVALS.length-1)];
   });
   const inProgress = allWords.filter(w => { const m = mastery[w.id]; return !m || m.stage < 3; });
@@ -1691,12 +1695,12 @@ function checkDailyCard(el, chosen, correct, wordId, mode) {
   else if (mode==='type-ar') { if(isCorrect) m.arCount=(m.arCount||0)+1; else m.arCount=0; }
   else                       { if(isCorrect) m.enCount=(m.enCount||0)+1; else m.enCount=0; }
   let promoted=false, sealed=false, reviewDone=false;
-  if      (mode==='mc'      &&(m.mcCount||0)>=3&&(m.stage||0)<1) { m.stage=1; promoted=true; }
-  else if (mode==='type-ar' &&(m.arCount||0)>=3&&(m.stage||0)<2) { m.stage=2; promoted=true; }
-  else if (mode==='type-en' &&(m.enCount||0)>=3&&(m.stage||0)<3) { m.stage=3; m.masteredDate=Date.now(); m.reviewCount=0; sealed=true; }
+  if      (mode==='mc'      &&(m.mcCount||0)>=3&&(m.stage||0)<1) { m.stage=1; m.mcCount=0; m.arCount=0; m.enCount=0; promoted=true; }
+  else if (mode==='type-ar' &&(m.arCount||0)>=3&&(m.stage||0)<2) { m.stage=2; m.arCount=0; m.enCount=0; promoted=true; }
+  else if (mode==='type-en' &&(m.enCount||0)>=3&&(m.stage||0)<3) { m.stage=3; m.enCount=0; m.masteredDate=Date.now(); m.reviewCount=0; sealed=true; }
   else if (wasStage3 && isCorrect) {
     m.reviewCount = (m.reviewCount||0)+1;
-    m.masteredDate = Date.now();
+    m.lastReviewDate = Date.now();
     reviewDone = true;
   }
   setWordMastery(wordId, m);

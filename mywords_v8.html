@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>كلماتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ━━━ START: SECTION 1 — CSS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --green:#22c55e;--green-dark:#16a34a;--green-light:#dcfce7;
+  --blue:#3b82f6;--blue-dark:#2563eb;--blue-light:#dbeafe;
+  --red:#ef4444;--red-dark:#dc2626;--red-light:#fee2e2;
+  --orange:#f97316;--gold:#eab308;--purple:#8b5cf6;--purple-dark:#7c3aed;--purple-light:#ede9fe;
+  --dark:#1e293b;--mid:#64748b;--light:#f1f5f9;--white:#ffffff;
+  --radius:16px;--shadow:0 4px 24px rgba(0,0,0,.10);
+}
+html{height:100%;}
+body{font-family:'Cairo',sans-serif;background:#e2e8f0;direction:rtl;min-height:100%;display:flex;justify-content:center;overflow-x:hidden;}
+#app{width:100%;max-width:480px;min-height:100vh;background:var(--white);position:relative;display:flex;flex-direction:column;box-shadow:0 0 60px rgba(0,0,0,0.18);}
+.hidden{display:none!important;}
+.content{flex:1;overflow-y:auto;}
+
+/* HEADER */
+.header{background:var(--white);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #e2e8f0;position:sticky;top:0;z-index:100;}
+.back-btn{width:36px;height:36px;border-radius:50%;border:2px solid #e2e8f0;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.2s;color:var(--dark);}
+.back-btn:hover{background:var(--light);}
+
+/* PROGRESS BAR — used by drill & daily */
+.combo-bar-wrap{padding:8px 16px 6px;background:var(--white);border-bottom:1px solid #e2e8f0;}
+.combo-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.streak-badge{display:flex;align-items:center;gap:4px;font-weight:900;font-size:13px;color:var(--orange);background:#fff7ed;padding:2px 10px;border-radius:20px;border:2px solid var(--orange);}
+.progress-track{width:100%;height:14px;background:#e2e8f0;border-radius:20px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),#4ade80);border-radius:20px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.progress-pct{font-size:9px;font-weight:900;color:white;float:right;margin-right:6px;margin-top:1px;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:sticky;bottom:0;background:var(--white);border-top:2px solid #e2e8f0;display:flex;z-index:99;}
+.nav-btn{flex:1;padding:10px 0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-size:10px;font-weight:700;color:var(--mid);transition:.2s;background:none;border:none;font-family:'Cairo',sans-serif;}
+.nav-btn.active{color:var(--blue);}
+.nav-btn span{font-size:20px;}
+
+/* OPTIONS — used in quiz & daily */
+.options-col{display:flex;flex-direction:column;gap:10px;padding:0 16px 16px;}
+.opt{padding:14px 16px;background:var(--white);border:3px solid #e2e8f0;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;transition:.2s;text-align:right;font-family:'Cairo',sans-serif;color:var(--dark);}
+.opt:hover{border-color:var(--blue);background:var(--blue-light);}
+.opt.picked{border-color:var(--blue);background:var(--blue-light);}
+.opt.correct-flash{border-color:var(--green);background:var(--green-light);animation:flashGreen .4s;}
+.opt.wrong-flash{border-color:var(--red);background:var(--red-light);animation:shakeOpt .4s;}
+@keyframes flashGreen{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+@keyframes shakeOpt{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* RESULTS — shared by quiz & drill */
+.results{padding:36px 20px;text-align:center;}
+.res-icon{font-size:80px;display:block;animation:bounce 1s;margin-bottom:14px;}
+.res-title{font-size:28px;font-weight:900;color:var(--dark);margin-bottom:6px;}
+.res-score{font-size:48px;font-weight:900;color:var(--green);}
+.res-xp{font-size:20px;color:var(--gold);font-weight:800;margin:8px 0 16px;}
+.res-btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;margin-top:10px;transition:.1s;}
+.res-btn.home{background:var(--green);color:white;box-shadow:0 4px 0 var(--green-dark);}
+.res-btn.retry{background:var(--orange);color:white;box-shadow:0 4px 0 #c2410c;}
+.res-btn:active{transform:translateY(3px);box-shadow:none!important;}
+
+/* TTS */
+.tts-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(59,130,246,.12);border:2px solid rgba(59,130,246,.3);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Cairo',sans-serif;transition:.2s;}
+.tts-btn.playing{background:var(--blue);color:white;border-color:var(--blue);}
+
+/* WFV POPUP */
+.wfv-overlay{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100%;background:rgba(0,0,0,.55);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;}
+.wfv-popup{background:#fff;border-radius:18px;width:100%;max-height:80vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,.25);}
+.wfv-head{padding:14px 16px 0;border-bottom:2px solid #e2e8f0;background:#fff;}
+.wfv-title{font-size:13px;font-weight:800;color:var(--mid);text-align:center;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
+.wfv-word{font-size:26px;font-weight:900;color:var(--dark);text-align:center;font-family:'Nunito',sans-serif;border:2px solid var(--dark);display:inline-block;padding:2px 18px;border-radius:8px;margin:0 auto 10px;display:block;width:fit-content;margin:0 auto 12px;}
+.wfv-tabs{display:flex;gap:0;}
+.wfv-tab{flex:1;padding:8px 0;font-size:13px;font-weight:800;cursor:pointer;border:none;background:none;font-family:'Cairo',sans-serif;color:var(--mid);border-bottom:3px solid transparent;transition:.2s;}
+.wfv-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.wfv-body{overflow-y:auto;padding:12px 14px 16px;flex:1;}
+.wfv-row{padding:8px 0;border-bottom:1px solid #f1f5f9;display:flex;flex-direction:column;gap:2px;}
+.wfv-row:last-child{border-bottom:none;}
+.wfv-form{font-size:17px;font-weight:900;color:var(--dark);font-family:'Nunito',sans-serif;direction:ltr;}
+.wfv-type{font-size:11px;font-weight:700;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:1px 8px;border-radius:10px;margin:2px 0;}
+.wfv-trans{font-size:13px;font-weight:700;color:var(--mid);}
+.wfv-when{font-size:12px;color:#94a3b8;font-weight:600;}
+.wfv-empty{text-align:center;color:var(--mid);font-size:13px;padding:20px 0;}
+.wfv-close{display:block;width:calc(100% - 28px);margin:0 14px 14px;padding:11px;background:var(--dark);color:white;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;}
+.wfv-btn{display:inline-flex;align-items:center;gap:5px;background:white;border:2px solid var(--blue);border-radius:10px;padding:6px 14px;font-size:12px;font-weight:800;color:var(--blue);cursor:pointer;font-family:'Cairo',sans-serif;transition:.15s;}
+.wfv-btn:hover{background:var(--blue);color:white;}
+
+/* ISLAND ACTION — reused as generic green button */
+.island-action{width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;transition:.15s;}
+.island-action.go{background:var(--green);color:white;box-shadow:0 4px 0 var(--green-dark);}
+.island-action.go:active{transform:translateY(3px);box-shadow:0 1px 0 var(--green-dark);}
+
+/* ===== MY WORDS ===== */
+.mywords-screen{padding:16px 16px 100px;}
+.mw-cats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.mw-cat-card{background:var(--white);border-radius:16px;padding:16px;box-shadow:var(--shadow);border:2px solid #e2e8f0;cursor:pointer;position:relative;transition:.2s;}
+.mw-cat-card:hover{border-color:var(--blue);transform:translateY(-2px);}
+.mw-cat-card.all-words{border-color:var(--blue);background:var(--blue-light);}
+.mw-cat-icon{width:48px;height:48px;border-radius:14px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px;}
+.mw-cat-name{font-size:15px;font-weight:800;color:var(--dark);}
+.mw-cat-count{font-size:12px;color:var(--mid);font-weight:600;margin-top:3px;}
+.mw-cat-actions{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.mw-cat-btn{width:100%;padding:8px;border:2px solid #e2e8f0;border-radius:8px;background:transparent;font-size:12px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;color:var(--dark);transition:.15s;}
+.mw-cat-btn:active{transform:scale(.97);}
+.mw-cat-btn.quiz{border-color:var(--blue);color:var(--blue);}
+.mw-cat-btn.quiz:hover{background:var(--blue);color:white;}
+.mw-cat-btn.learn{border-color:var(--green);color:var(--green-dark);}
+.mw-cat-btn.learn:hover{background:var(--green);color:white;}
+.mw-cat-btn.drill{border-color:var(--purple);color:var(--purple);}
+.mw-cat-btn.drill:hover{background:var(--purple);color:white;}
+.mw-cat-menu{position:absolute;top:10px;left:10px;font-size:18px;color:var(--mid);cursor:pointer;line-height:1;padding:4px;}
+
+/* MODALS */
+.mw-modal-overlay{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100%;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;}
+.mw-modal{background:var(--white);border-radius:20px 20px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding-bottom:20px;}
+.mw-modal-header{padding:16px 18px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #e2e8f0;position:sticky;top:0;background:var(--white);z-index:2;}
+.mw-modal-title{font-size:16px;font-weight:900;color:var(--dark);}
+.mw-modal-close{width:34px;height:34px;border-radius:50%;border:2px solid #e2e8f0;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
+.mw-modal-body{padding:16px 18px;}
+.mw-field{margin-bottom:14px;}
+.mw-label{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.mw-input{width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:14px;font-weight:600;font-family:'Cairo',sans-serif;outline:none;transition:.2s;color:var(--dark);}
+.mw-input:focus{border-color:var(--blue);}
+.mw-input.ltr{direction:ltr;}
+.mw-input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mw-textarea{height:70px;resize:none;}
+.mw-select{appearance:none;background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%2364748b' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat left 14px center;cursor:pointer;}
+.mw-submit-btn{width:100%;padding:15px;border:none;border-radius:12px;background:var(--blue);color:white;font-size:16px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 4px 0 var(--blue-dark);transition:.1s;margin-top:6px;}
+.mw-submit-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--blue-dark);}
+.mw-bottomsheet{background:var(--white);border-radius:20px 20px 0 0;width:100%;padding:16px 18px 32px;}
+.mw-sheet-title{font-size:15px;font-weight:900;color:var(--dark);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.mw-sheet-btn{width:100%;padding:14px;border:2px solid #e2e8f0;border-radius:12px;background:transparent;font-size:15px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;color:var(--dark);margin-bottom:8px;transition:.15s;text-align:center;}
+.mw-sheet-btn:hover{background:var(--light);}
+.mw-sheet-btn.danger{color:var(--red);border-color:var(--red-light);}
+
+/* WORD DETAIL / LEARN */
+.mw-learn-screen{padding:16px 16px 100px;}
+.mw-word-card{background:var(--white);border-radius:18px;padding:20px;box-shadow:var(--shadow);border:2px solid #e2e8f0;margin-bottom:12px;}
+.mw-word-main{font-size:26px;font-weight:900;color:var(--dark);direction:ltr;text-align:center;margin-bottom:6px;}
+.mw-word-pron{font-size:14px;color:var(--mid);direction:ltr;text-align:center;margin-bottom:12px;font-family:'Nunito',sans-serif;}
+.mw-word-trans{font-size:18px;font-weight:800;color:var(--blue);text-align:center;margin-bottom:14px;}
+.mw-word-divider{border:none;border-top:2px solid #e2e8f0;margin:12px 0;}
+.mw-word-section{margin-bottom:12px;}
+.mw-word-section-title{font-size:12px;font-weight:700;color:var(--mid);margin-bottom:5px;}
+.mw-word-section-body{font-size:14px;color:var(--dark);line-height:1.7;direction:ltr;text-align:left;font-family:'Nunito',sans-serif;}
+.mw-word-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.mw-tag{background:var(--light);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--mid);}
+.mw-nav-arrows{display:flex;justify-content:space-between;align-items:center;padding:10px 0;}
+.mw-nav-arrow{width:44px;height:44px;border-radius:50%;border:2px solid #e2e8f0;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:.2s;}
+.mw-nav-arrow:disabled{opacity:.3;cursor:not-allowed;}
+.mw-nav-arrow:not(:disabled):hover{background:var(--blue);border-color:var(--blue);color:white;}
+.mw-counter{font-size:13px;font-weight:700;color:var(--mid);}
+
+/* QUIZ MODE */
+.mw-quiz-card{background:var(--white);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px;}
+.mw-quiz-prompt{font-size:13px;font-weight:700;color:var(--mid);text-align:center;margin-bottom:8px;}
+.mw-quiz-word{font-size:24px;font-weight:900;color:var(--dark);text-align:center;direction:ltr;margin-bottom:16px;}
+
+/* FAB */
+.mw-fab{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateX(170px);width:52px;height:52px;border-radius:50%;background:var(--blue);color:white;border:none;font-size:26px;cursor:pointer;box-shadow:0 4px 16px rgba(59,130,246,.5);display:none;align-items:center;justify-content:center;z-index:98;}
+.mw-fab.show{display:flex;}
+
+/* DRILL MODE */
+.drill-screen{padding:16px;display:flex;flex-direction:column;gap:14px;}
+.drill-direction{display:inline-block;padding:4px 12px;border-radius:8px;font-size:12px;font-weight:800;color:white;background:var(--purple);margin-bottom:2px;}
+.drill-prompt-card{background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:28px 20px;text-align:center;}
+.drill-prompt-label{font-size:13px;font-weight:700;color:#94a3b8;margin-bottom:10px;}
+.drill-prompt-word{font-size:28px;font-weight:900;color:white;direction:ltr;font-family:'Nunito',sans-serif;margin-bottom:8px;}
+.drill-prompt-word.ar{direction:rtl;font-family:'Cairo',sans-serif;font-size:22px;}
+.drill-prompt-hint{font-size:13px;color:#64748b;font-family:'Nunito',sans-serif;}
+.drill-input{width:100%;padding:18px;font-size:20px;font-weight:700;text-align:center;border:3px solid #e2e8f0;border-radius:16px;outline:none;transition:.2s;font-family:'Nunito',sans-serif;direction:ltr;color:var(--dark);}
+.drill-input:focus{border-color:var(--purple);}
+.drill-input.correct{border-color:var(--green);background:var(--green-light);color:var(--green-dark);}
+.drill-input.wrong{border-color:var(--red);background:var(--red-light);color:var(--red-dark);}
+.drill-feedback{border-radius:14px;padding:14px 16px;font-size:14px;font-weight:700;text-align:center;display:none;}
+.drill-feedback.correct{background:var(--green-light);border:2px solid var(--green);color:var(--green-dark);}
+.drill-feedback.wrong{background:var(--red-light);border:2px solid var(--red);color:var(--red-dark);}
+.drill-answer-reveal{font-size:18px;font-weight:900;direction:ltr;font-family:'Nunito',sans-serif;margin-top:4px;}
+.drill-check-btn{width:100%;padding:16px;border:none;border-radius:14px;font-size:17px;font-weight:900;cursor:pointer;font-family:'Cairo',sans-serif;transition:.1s;}
+.drill-check-btn.ready{background:var(--purple);color:white;box-shadow:0 4px 0 var(--purple-dark);}
+.drill-check-btn.ready:active{transform:translateY(3px);box-shadow:0 1px 0 var(--purple-dark);}
+.drill-check-btn.next{background:var(--blue);color:white;box-shadow:0 4px 0 var(--blue-dark);}
+.drill-check-btn.next:active{transform:translateY(3px);box-shadow:0 1px 0 var(--blue-dark);}
+.drill-check-btn.disabled{background:#e2e8f0;color:#94a3b8;cursor:not-allowed;box-shadow:0 4px 0 #cbd5e1;}
+.drill-lives{display:flex;gap:6px;justify-content:center;font-size:22px;}
+.drill-score-chip{background:var(--purple);color:white;padding:3px 12px;border-radius:20px;font-size:13px;font-weight:800;}
+
+/* FORMS TABLE */
+.forms-table{width:100%;border-collapse:collapse;margin-top:6px;}
+.forms-table th{font-size:11px;font-weight:800;color:var(--mid);padding:5px 8px;text-align:right;border-bottom:2px solid #e2e8f0;background:#f8fafc;}
+.forms-table td{font-size:12px;padding:7px 8px;border-bottom:1px solid #f1f5f9;vertical-align:top;color:var(--dark);}
+.forms-table tr:last-child td{border-bottom:none;}
+.forms-table tr.highlight-form td{background:#eff6ff;}
+.form-word{font-family:'Nunito',sans-serif;font-weight:800;direction:ltr;color:var(--blue-dark);}
+.form-type-badge{display:inline-block;background:var(--light);border-radius:6px;padding:1px 7px;font-size:10px;font-weight:700;color:var(--mid);direction:ltr;}
+.displayed-form-box{background:linear-gradient(135deg,#fef9c3,#fef3c7);border:2px solid #eab308;border-radius:12px;padding:12px 14px;margin:10px 0;}
+.displayed-form-word{font-size:20px;font-weight:900;color:#92400e;direction:ltr;font-family:'Nunito',sans-serif;}
+.displayed-form-label{font-size:11px;font-weight:800;color:#b45309;margin-bottom:4px;}
+.base-form-badge{display:inline-flex;align-items:center;gap:6px;background:#ede9fe;border:2px solid var(--purple);border-radius:10px;padding:6px 12px;margin-bottom:10px;}
+.base-form-text{font-size:16px;font-weight:900;color:var(--purple-dark);direction:ltr;font-family:'Nunito',sans-serif;}
+
+/* FORMS MODAL ROWS */
+.form-row{background:#f8fafc;border:2px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin-bottom:8px;position:relative;}
+.form-row-del{position:absolute;top:8px;left:8px;background:transparent;border:none;font-size:14px;cursor:pointer;color:var(--red);padding:2px 6px;}
+/* ━━━ END: SECTION 1 — CSS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+</style>
+</head>
+<body>
+<!-- ━━━ START: SECTION 2 — HTML SHELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div id="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="back-btn" id="back-btn" onclick="goBack()">←</div>
+    <div style="font-size:14px;font-weight:800;color:var(--dark);" id="header-title">كلماتي 📚</div>
+    <div style="width:36px;"></div>
+  </div>
+
+  <!-- Progress Bar — hidden unless drill/daily active -->
+  <div class="combo-bar-wrap hidden" id="combo-wrap">
+    <div class="combo-bar-top">
+      <div class="combo-label" id="prog-label">التقدم</div>
+      <div class="streak-badge" id="streak-badge">✅ <span id="streak-disp">0</span> مختومة</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill" style="width:0%">
+        <span class="progress-pct" id="prog-pct">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content" id="content"></div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav" id="bottom-nav">
+    <button class="nav-btn active" id="nav-words" onclick="goHome()"><span>📚</span>كلماتي</button>
+    <button class="nav-btn" id="nav-daily" onclick="startDailySession()"><span>📅</span>جلسة اليوم</button>
+    <button class="nav-btn" id="nav-stats" onclick="renderStatsHome()"><span>📊</span>إحصائياتي</button>
+  </div>
+
+  <!-- FAB -->
+  <button class="mw-fab show" id="mw-fab">＋</button>
+
+  <!-- Add / Edit Word Modal -->
+  <div class="mw-modal-overlay hidden" id="mw-add-modal" onclick="closeMwModal(event)">
+    <div class="mw-modal" onclick="event.stopPropagation()">
+      <div class="mw-modal-header">
+        <div class="mw-modal-title" id="mw-modal-title">➕ إضافة كلمة جديدة</div>
+        <div class="mw-modal-close" onclick="document.getElementById('mw-add-modal').classList.add('hidden')">✕</div>
+      </div>
+      <div class="mw-modal-body">
+        <div class="mw-field">
+          <div class="mw-label">الكلمة / العبارة *</div>
+          <input class="mw-input ltr" id="mw-word" placeholder="Word / Phrase" autocomplete="off" autocorrect="off" spellcheck="false">
+        </div>
+        <div class="mw-input-row">
+          <div class="mw-field">
+            <div class="mw-label">النطق (IPA)</div>
+            <input class="mw-input ltr" id="mw-pron" placeholder="/prəˌnʌnsɪˈeɪʃən/" autocomplete="off">
+          </div>
+          <div class="mw-field">
+            <div class="mw-label">نطق عربي</div>
+            <input class="mw-input" id="mw-local-pron" placeholder="برونانسييشن">
+          </div>
+        </div>
+        <div class="mw-field">
+          <div class="mw-label">الترجمة *</div>
+          <input class="mw-input" id="mw-trans" placeholder="المعنى بالعربي">
+        </div>
+        <div class="mw-field">
+          <div class="mw-label">التعريف</div>
+          <textarea class="mw-input mw-textarea ltr" id="mw-def" placeholder="Definition in English..."></textarea>
+        </div>
+        <div class="mw-field">
+          <div class="mw-label">أمثلة</div>
+          <textarea class="mw-input mw-textarea ltr" id="mw-examples" placeholder="Example sentences..."></textarea>
+        </div>
+        <div class="mw-input-row">
+          <div class="mw-field">
+            <div class="mw-label">التصنيف</div>
+            <select class="mw-input mw-select" id="mw-cat"><option value="">-- اختر --</option></select>
+          </div>
+          <div class="mw-field">
+            <div class="mw-label">النوع</div>
+            <input class="mw-input ltr" id="mw-type" placeholder="noun / verb / adj...">
+          </div>
+        </div>
+        <div class="mw-input-row">
+          <div class="mw-field">
+            <div class="mw-label">مترادفات</div>
+            <input class="mw-input ltr" id="mw-syn" placeholder="Synonyms">
+          </div>
+          <div class="mw-field">
+            <div class="mw-label">أضداد</div>
+            <input class="mw-input ltr" id="mw-ant" placeholder="Antonyms">
+          </div>
+        </div>
+        <hr style="border:none;border-top:2px solid #e2e8f0;margin:14px 0;">
+        <div style="font-size:13px;font-weight:900;color:var(--purple-dark);margin-bottom:12px;">📚 بيانات التصريف</div>
+        <div class="mw-input-row">
+          <div class="mw-field">
+            <div class="mw-label">الجذر / Base Form</div>
+            <input class="mw-input ltr" id="mw-base-form" placeholder="discipline" autocomplete="off" autocorrect="off" spellcheck="false">
+          </div>
+          <div class="mw-field">
+            <div class="mw-label">ترجمة الجذر</div>
+            <input class="mw-input" id="mw-base-form-trans" placeholder="تخصص / انضباط">
+          </div>
+        </div>
+        <div class="mw-input-row">
+          <div class="mw-field">
+            <div class="mw-label">الشكل في الكتاب</div>
+            <input class="mw-input ltr" id="mw-displayed-form" placeholder="disciplines" autocomplete="off" autocorrect="off" spellcheck="false">
+          </div>
+          <div class="mw-field">
+            <div class="mw-label">ترجمة شكل الكتاب</div>
+            <input class="mw-input" id="mw-displayed-form-trans" placeholder="تخصصات">
+          </div>
+        </div>
+        <div class="mw-field">
+          <div class="mw-label">الجملة من الكتاب</div>
+          <textarea class="mw-input mw-textarea ltr" id="mw-displayed-sentence" placeholder="Engineers today work across multiple disciplines..."></textarea>
+        </div>
+        <div class="mw-field">
+          <div class="mw-label">معنى الجملة</div>
+          <textarea class="mw-input mw-textarea" id="mw-displayed-sentence-trans" placeholder="المهندسون يعملون عبر تخصصات متعددة..."></textarea>
+        </div>
+        <hr style="border:none;border-top:2px solid #e2e8f0;margin:14px 0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:900;color:var(--dark);">📋 كل التصريفات</div>
+          <button type="button" onclick="addFormRow()" style="background:var(--purple);color:white;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;">+ إضافة تصريف</button>
+        </div>
+        <div id="mw-forms-container"></div>
+        <input type="hidden" id="mw-edit-id" value="">
+        <button class="mw-submit-btn" onclick="saveMwWord()">💾 حفظ الكلمة</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Category Modal -->
+  <div class="mw-modal-overlay hidden" id="mw-cat-modal" onclick="document.getElementById('mw-cat-modal').classList.add('hidden')">
+    <div class="mw-modal" onclick="event.stopPropagation()" style="max-height:50vh;">
+      <div class="mw-modal-header">
+        <div class="mw-modal-title">📁 إضافة تصنيف</div>
+        <div class="mw-modal-close" onclick="document.getElementById('mw-cat-modal').classList.add('hidden')">✕</div>
+      </div>
+      <div class="mw-modal-body">
+        <div class="mw-field">
+          <div class="mw-label">اسم التصنيف</div>
+          <input class="mw-input" id="mw-new-cat" placeholder="مثلاً: أفعال الحركة، كلمات صعبة...">
+        </div>
+        <button class="mw-submit-btn" onclick="saveMwCategory()">💾 إضافة التصنيف</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB Action Sheet -->
+  <div class="mw-modal-overlay hidden" id="mw-action-sheet" onclick="document.getElementById('mw-action-sheet').classList.add('hidden')">
+    <div class="mw-bottomsheet" onclick="event.stopPropagation()">
+      <div class="mw-sheet-title">
+        <span>إضافة</span>
+        <div class="mw-modal-close" onclick="document.getElementById('mw-action-sheet').classList.add('hidden')">✕</div>
+      </div>
+      <button class="mw-sheet-btn" onclick="mwSheetAction('addCat')">📁 إضافة تصنيف</button>
+      <button class="mw-sheet-btn" onclick="mwSheetAction('addWord')">➕ إضافة كلمة</button>
+    </div>
+  </div>
+
+  <!-- Category Actions Sheet -->
+  <div class="mw-modal-overlay hidden" id="mw-cat-action-sheet" onclick="document.getElementById('mw-cat-action-sheet').classList.add('hidden')">
+    <div class="mw-bottomsheet" onclick="event.stopPropagation()">
+      <div class="mw-sheet-title">
+        <span id="mw-cat-sheet-name"></span>
+        <div class="mw-modal-close" onclick="document.getElementById('mw-cat-action-sheet').classList.add('hidden')">✕</div>
+      </div>
+      <button class="mw-sheet-btn" onclick="mwCatSheetAction('rename')">✏️ تغيير الاسم</button>
+      <button class="mw-sheet-btn danger" onclick="mwCatSheetAction('delete')">🗑️ حذف التصنيف والكلمات</button>
+    </div>
+  </div>
+
+</div>
+<!-- ━━━ END: SECTION 2 — HTML SHELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+
+<script src="mywords_data.js"></script>
+<script>
+// ━━━ SECTION 3 — VOCAB DATA: loaded from mywords_data.js ━━━━━━━━━━━━━━━━━━━━
+// ━━━ START: SECTION 4 — STATE & CORE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let mwData  = { categories: [], words: [] };
+let mwState = {
+  currentScreen: 'list',
+  learnWords: [], learnIdx: 0,
+  quizQueue: [], quizDone: 0, quizTotal: 0, quizScore: 0, masteryMap: {},
+  dailyQueue: [], dailySessionIds: [], dailyCorrect: 0, dailyTotal: 0,
+  activeCatForSheet: null
+};
+const mwDrill = {
+  words: [], idx: 0, lives: 5, score: 0,
+  checked: false, direction: 'ar2en',
+  catId: null, wrongWords: [], isReviewRound: false
+};
+
+// ---- Utilities ----
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function mwId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+
+// ---- TTS ----
+function speakText(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1;
+  window.speechSynthesis.speak(u);
+}
+
+// ---- Word Stats ----
+function loadWordStats() {
+  try { return JSON.parse(localStorage.getItem('ep_word_stats') || '{}'); } catch(e) { return {}; }
+}
+function saveWordStat(wordId, correct) {
+  const s = loadWordStats();
+  if (!s[wordId]) s[wordId] = { correct: 0, wrong: 0 };
+  if (correct) s[wordId].correct++; else s[wordId].wrong++;
+  localStorage.setItem('ep_word_stats', JSON.stringify(s));
+}
+
+// ---- MW Data Load/Save ----
+function loadMwData() {
+  try {
+    const d = localStorage.getItem('ep_mywords');
+    if (d) mwData = JSON.parse(d);
+    if (!mwData.categories) mwData.categories = [];
+    if (!mwData.words) mwData.words = [];
+  } catch(e) {}
+  BUILTIN_CATS.forEach(bc => { if (!mwData.categories.find(c => c.id === bc.id)) mwData.categories.unshift(bc); });
+  BUILTIN_WORDS.forEach(bw => { if (!mwData.words.find(w => w.id === bw.id)) mwData.words.push(bw); });
+  INFLUENCE_WORDS.forEach(bw => { if (!mwData.words.find(w => w.id === bw.id)) mwData.words.push(bw); });
+}
+function saveMwData() {
+  try {
+    const toSave = {
+      categories: mwData.categories.filter(c => !BUILTIN_CATS.find(bc => bc.id === c.id)),
+      words: mwData.words.filter(w =>
+        !BUILTIN_WORDS.find(bw => bw.id === w.id) &&
+        !INFLUENCE_WORDS.find(bw => bw.id === w.id)
+      )
+    };
+    localStorage.setItem('ep_mywords', JSON.stringify(toSave));
+  } catch(e) {}
+}
+
+// ---- Daily SR Data ----
+function loadDailyData() {
+  try { return JSON.parse(localStorage.getItem('ep_daily15') || '{}'); } catch(e) { return {}; }
+}
+function saveDailyData(d) {
+  try { localStorage.setItem('ep_daily15', JSON.stringify(d)); } catch(e) {}
+}
+function getWordMastery(wordId) {
+  const d = loadDailyData();
+  return (d.mastery || {})[wordId] || { stage: 0, mcCount: 0, arCount: 0, enCount: 0, reviewCount: 0 };
+}
+function setWordMastery(wordId, m) {
+  const d = loadDailyData();
+  if (!d.mastery) d.mastery = {};
+  d.mastery[wordId] = m;
+  saveDailyData(d);
+}
+
+// ---- Navigation ----
+// كل شاشة بتحدد currentScreen بس — goBack بيعرف هيروح فين وحده
+function goBack() {
+  const s = mwState.currentScreen;
+  if (s === 'list') return;
+  if (s === 'drill' || s === 'daily') {
+    if (!confirm('تخرج من الجلسة؟')) return;
+  }
+  goHome();
+}
+function goHome() {
+  document.getElementById('combo-wrap').classList.add('hidden');
+  document.getElementById('bottom-nav').classList.remove('hidden');
+  document.getElementById('mw-fab').classList.add('show');
+  renderMwScreen();
+}
+// ━━━ END: SECTION 4 — STATE & CORE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━ START: SECTION 5 — VOCAB SYSTEM (Render + Learn + Quiz + Drill) ━━━━━━
+
+// ---- HELPERS ----
+function getTestWord(w) { return (w.displayedForm && w.displayedForm.trim()) ? w.displayedForm : w.word; }
+
+function getSmartDistractors(w, allWords, count) {
+  count = count || 3;
+  const others = allWords.filter(x => x.id !== w.id);
+  // أولوية 1: نفس الـ type (noun مع noun) من نفس الـ category
+  const p1 = shuffle(others.filter(x => x.type === w.type && x.catId === w.catId));
+  // أولوية 2: نفس الـ type من أي category
+  const p2 = shuffle(others.filter(x => x.type === w.type && x.catId !== w.catId));
+  // أولوية 3: نفس الـ category أي type
+  const p3 = shuffle(others.filter(x => x.catId === w.catId && x.type !== w.type));
+  // أولوية 4: باقي الكلمات
+  const p4 = shuffle(others.filter(x => x.catId !== w.catId && x.type !== w.type));
+  const pool = [];
+  const used = new Set();
+  for (const arr of [p1, p2, p3, p4]) {
+    for (const x of arr) {
+      if (!used.has(x.id) && pool.length < count) { pool.push(x.translation); used.add(x.id); }
+    }
+    if (pool.length >= count) break;
+  }
+  return pool;
+}
+
+// ---- MAIN SCREEN ----
+function renderMwScreen() {
+  loadMwData();
+  mwState.currentScreen = 'list';
+  document.getElementById('combo-wrap').classList.add('hidden');
+  document.getElementById('bottom-nav').classList.remove('hidden');
+  document.getElementById('mw-fab').classList.add('show');
+  document.getElementById('header-title').textContent = 'كلماتي 📚';
+
+  const allWords = mwData.words;
+  const cats = mwData.categories;
+  const icons = ['📚','🌟','🎯','💡','🔥','⚡','🎓','📝','🔤','🌈'];
+
+  // Daily banner
+  const d = loadDailyData();
+  const today = todayStr();
+  const mastery = d.mastery || {};
+  const sessionWords = (d.lastDay === today && d.sessionWords) ? d.sessionWords : [];
+  const sealed = sessionWords.filter(id => (mastery[id]?.stage || 0) >= 3).length;
+  const isDone = d.lastDay === today && d.sessionDone;
+  const dueSR = allWords.filter(w => {
+    const m = mastery[w.id];
+    if (!m || m.stage < 3 || !m.masteredDate) return false;
+    const daysSince = Math.floor((Date.now() - m.masteredDate) / 86400000);
+    return daysSince >= SR_INTERVALS[Math.min(m.reviewCount || 0, SR_INTERVALS.length - 1)];
+  }).length;
+
+  let dailyBanner = '';
+  if (isDone) {
+    dailyBanner = `<div style="background:linear-gradient(135deg,#dcfce7,#d1fae5);border:2px solid var(--green);border-radius:16px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;">
+      <div style="font-size:40px;">✅</div>
+      <div><div style="font-size:15px;font-weight:900;color:var(--green-dark);">أنجزت مهمة اليوم! 🎉</div>
+      <div style="font-size:12px;color:var(--mid);margin-top:3px;">${sealed} كلمة مختومة — تعالى بكرة لجلسة جديدة</div></div>
+    </div>`;
+  } else {
+    const srBadge = dueSR > 0 ? `<div style="background:#fef9c3;border:1px solid #eab308;border-radius:20px;padding:1px 10px;font-size:11px;font-weight:800;color:#854d0e;display:inline-block;margin-top:4px;">🔁 ${dueSR} مراجعة مجدولة</div>` : '';
+    const prog = sessionWords.length > 0
+      ? `<div style="background:#e2e8f0;border-radius:6px;height:6px;margin-top:8px;overflow:hidden;"><div style="height:100%;background:var(--blue);border-radius:6px;width:${Math.round((sealed/sessionWords.length)*100)}%;"></div></div>` : '';
+    dailyBanner = `<div onclick="startDailySession()" style="background:linear-gradient(135deg,#dbeafe,#ede9fe);border:2px solid var(--blue);border-radius:16px;padding:16px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:14px;">
+      <div style="font-size:40px;">📅</div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:900;color:var(--blue-dark);">جلسة اليوم — 15 كلمة</div>
+        <div style="font-size:12px;color:var(--mid);margin-top:2px;">${sessionWords.length > 0 ? `${sealed}/${sessionWords.length} مكتملة` : 'ابدأ الآن!'}</div>
+        ${srBadge}${prog}
+      </div>
+      <div style="font-size:24px;">←</div>
+    </div>`;
+  }
+
+  // Weak words banner
+  const stats = loadWordStats();
+  const weakWords = allWords.filter(w => {
+    const s = stats[w.id];
+    if (!s) return false;
+    const t = s.correct + s.wrong;
+    return t > 0 && (s.correct / t) < 0.6;
+  });
+  const weakBanner = weakWords.length > 0
+    ? `<div onclick="startMwWeakDrill()" style="background:linear-gradient(135deg,#fee2e2,#fef9c3);border:2px solid var(--red);border-radius:14px;padding:12px 16px;margin-bottom:14px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:32px;">🎯</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:900;color:var(--red-dark);">درّب الكلمات الضعيفة</div>
+        <div style="font-size:12px;color:var(--mid);margin-top:2px;">عندك ${weakWords.length} كلمة تحتاج مراجعة</div></div>
+        <div style="font-size:20px;">←</div>
+      </div>` : '';
+
+  // Categories grid
+  let grid = `<div class="mw-cat-card all-words">
+    <div class="mw-cat-icon" style="background:#dbeafe">📚</div>
+    <div class="mw-cat-name">All Words</div>
+    <div class="mw-cat-count">${allWords.length} كلمة</div>
+    <div class="mw-cat-actions">
+      <button class="mw-cat-btn quiz" onclick="event.stopPropagation();startMwQuiz(null)">Quiz</button>
+      <button class="mw-cat-btn learn" onclick="event.stopPropagation();startMwLearn(null)">Learn</button>
+      <button class="mw-cat-btn drill" onclick="event.stopPropagation();startMwDrill(null)">⚡ Drill</button>
+    </div>
+  </div>`;
+  cats.forEach((cat, i) => {
+    const catWords = allWords.filter(w => w.catId === cat.id);
+    grid += `<div class="mw-cat-card">
+      <div class="mw-cat-menu" onclick="event.stopPropagation();openCatActionSheet('${cat.id}','${cat.name.replace(/'/g,"\\'")}')">⋯</div>
+      <div class="mw-cat-icon">${icons[i % icons.length]}</div>
+      <div class="mw-cat-name">${cat.name}</div>
+      <div class="mw-cat-count">${catWords.length} كلمة</div>
+      <div class="mw-cat-actions">
+        <button class="mw-cat-btn quiz" onclick="event.stopPropagation();startMwQuiz('${cat.id}')">Quiz</button>
+        <button class="mw-cat-btn learn" onclick="event.stopPropagation();startMwLearn('${cat.id}')">Learn</button>
+        <button class="mw-cat-btn drill" onclick="event.stopPropagation();startMwDrill('${cat.id}')">⚡ Drill</button>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('content').innerHTML = `<div class="mywords-screen">
+    ${dailyBanner}
+    ${weakBanner}
+    <div class="mw-cats-grid">${grid}</div>
+    ${allWords.length > 0 ? `<div style="margin-top:16px;">
+      <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:10px;">📋 جميع الكلمات</div>
+      ${allWords.map(w => renderMwWordRow(w)).join('')}
+    </div>` : ''}
+  </div>`;
+}
+
+function renderMwWordRow(w) {
+  const cat = mwData.categories.find(c => c.id === w.catId);
+  return `<div style="background:var(--white);border:2px solid #e2e8f0;border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="openWordDetail('${w.id}')">
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:16px;font-weight:800;color:var(--dark);direction:ltr;">${w.word}</div>
+      <div style="font-size:13px;color:var(--blue);font-weight:600;">${w.translation}</div>
+      ${cat ? `<div style="font-size:11px;color:var(--mid);margin-top:2px;">📁 ${cat.name}</div>` : ''}
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button style="padding:5px 10px;border:2px solid #e2e8f0;border-radius:8px;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:var(--mid);" onclick="event.stopPropagation();editMwWord('${w.id}')">✏️</button>
+      <button style="padding:5px 10px;border:2px solid var(--red-light);border-radius:8px;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:var(--red);" onclick="event.stopPropagation();deleteMwWord('${w.id}')">🗑️</button>
+    </div>
+  </div>`;
+}
+
+// ---- WORD DETAIL ----
+function openWordDetail(wordId) {
+  const w = mwData.words.find(x => x.id === wordId);
+  if (!w) return;
+  mwState.currentScreen = 'detail';
+  document.getElementById('mw-fab').classList.remove('show');
+  const cat = mwData.categories.find(c => c.id === w.catId);
+  document.getElementById('header-title').textContent = w.word;
+  document.getElementById('content').innerHTML = `<div class="mw-learn-screen">
+    <div class="mw-word-card">
+      <div class="mw-word-main">${w.word}</div>
+      ${w.pronunciation ? `<div class="mw-word-pron">/${w.pronunciation}/</div>` : ''}
+      ${w.localPron ? `<div style="text-align:center;font-size:13px;color:var(--mid);margin-bottom:10px;">${w.localPron}</div>` : ''}
+      <div class="mw-word-trans">${w.translation}</div>
+      <hr class="mw-word-divider">
+      ${w.definition ? `<div class="mw-word-section"><div class="mw-word-section-title">📖 Definition</div><div class="mw-word-section-body">${w.definition}</div></div>` : ''}
+      ${w.type ? `<div class="mw-word-section"><div class="mw-word-section-title">🏷️ Type</div><div class="mw-word-tags"><span class="mw-tag">${w.type}</span></div></div>` : ''}
+      ${w.examples ? `<div class="mw-word-section"><div class="mw-word-section-title">💬 Examples</div><div class="mw-word-section-body">${w.examples.replace(/\n/g,'<br>')}</div></div>` : ''}
+      ${w.synonyms ? `<div class="mw-word-section"><div class="mw-word-section-title">🔁 Synonyms</div><div class="mw-word-section-body">${w.synonyms}</div></div>` : ''}
+      ${w.antonyms ? `<div class="mw-word-section"><div class="mw-word-section-title">↔️ Antonyms</div><div class="mw-word-section-body">${w.antonyms}</div></div>` : ''}
+      ${cat ? `<div class="mw-word-section"><div class="mw-word-section-title">📁 تصنيف</div><div class="mw-word-tags"><span class="mw-tag">${cat.name}</span></div></div>` : ''}
+      ${(w.forms&&w.forms.length>0) ? `<div class="mw-word-section"><div class="mw-word-section-title">📋 كل التصريفات</div><div style="overflow-x:auto;"><table class="forms-table"><thead><tr><th>الشكل</th><th>النوع</th><th>المعنى</th><th>امتى نستخدمه</th></tr></thead><tbody>${w.forms.map(f=>`<tr${f.form===(w.displayedForm||'__')?' class="highlight-form"':''}><td><span class="form-word">${f.form}</span></td><td><span class="form-type-badge">${f.type}</span></td><td style="font-size:12px;">${f.translation}</td><td style="font-size:11px;color:var(--mid);">${f.when||''}</td></tr>`).join('')}</tbody></table></div></div>` : ''}
+    </div>
+    <div style="display:flex;gap:10px;margin-top:6px;">
+      <button class="island-action go" style="flex:1;margin:0;" onclick="speakText('${w.word.replace(/'/g,"\\'")}')">🔊 استمع</button>
+      <button class="island-action go" style="flex:1;margin:0;background:var(--blue);box-shadow:0 4px 0 var(--blue-dark);" onclick="editMwWord('${w.id}')">✏️ تعديل</button>
+    </div>
+  </div>`;
+}
+
+// ---- STATS HOME (tabs) ----
+function renderStatsHome(tab) {
+  tab = tab || 'sr';
+  loadMwData();
+  mwState.currentScreen = 'stats';
+  document.getElementById('header-title').textContent = 'إحصائياتي 📊';
+  document.getElementById('bottom-nav').classList.remove('hidden');
+  document.getElementById('combo-wrap').classList.add('hidden');
+  document.getElementById('mw-fab').classList.remove('show');
+
+  const tabBar = `<div style="display:flex;gap:0;border-bottom:2px solid #e2e8f0;background:white;position:sticky;top:0;z-index:10;">
+    <button onclick="renderStatsHome('sr')" style="flex:1;padding:12px 6px;border:none;background:none;font-size:13px;font-weight:800;font-family:'Cairo',sans-serif;cursor:pointer;
+      ${tab==='sr'?'color:var(--blue);border-bottom:3px solid var(--blue);margin-bottom:-2px;':'color:var(--mid);'}">🔁 مراجعاتي</button>
+    <button onclick="renderStatsHome('quiz')" style="flex:1;padding:12px 6px;border:none;background:none;font-size:13px;font-weight:800;font-family:'Cairo',sans-serif;cursor:pointer;
+      ${tab==='quiz'?'color:var(--blue);border-bottom:3px solid var(--blue);margin-bottom:-2px;':'color:var(--mid);'}">📈 الكويز</button>
+  </div>`;
+
+  const c = document.getElementById('content');
+  c.innerHTML = tabBar + '<div id="stats-tab-body"></div>';
+  if (tab === 'sr') _renderSRTimeline();
+  else _renderQuizStats();
+}
+
+// ── نسبة الذاكرة (Ebbinghaus R = e^(-t/S)) ──
+function _calcRetention(m) {
+  if (!m || m.stage < 3 || !m.masteredDate) return null;
+  // Stability بعد كل مراجعة: [1,3,7,14,30] يوم
+  const S = SR_INTERVALS[Math.min(m.reviewCount||0, SR_INTERVALS.length-1)];
+  const daysSince = (Date.now() - m.masteredDate) / 86400000;
+  const R = Math.round(100 * Math.exp(-daysSince / S));
+  return Math.max(R, 0);
+}
+
+function _nextReviewDate(m) {
+  if (!m || m.stage < 3 || !m.masteredDate) return null;
+  const idx = Math.min(m.reviewCount||0, SR_INTERVALS.length-1);
+  const days = SR_INTERVALS[idx];
+  const d = new Date(m.masteredDate + days * 86400000);
+  const day = String(d.getDate()).padStart(2,'0');
+  const mon = String(d.getMonth()+1).padStart(2,'0');
+  return `${day}/${mon}/${d.getFullYear()}`;
+}
+
+function _fmtDateShort(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts);
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function _renderSRTimeline() {
+  const d = loadDailyData();
+  const mastery = d.mastery || {};
+  const allWords = mwData.words;
+
+  // فرز الكلمات
+  const overdue = [], upcomingToday = [], upcoming = [], sealed = [], inProgress = [];
+  allWords.forEach(w => {
+    const m = mastery[w.id];
+    if (!m || m.stage < 3) { inProgress.push({w,m}); return; }
+    if ((m.reviewCount||0) >= SR_INTERVALS.length) { sealed.push({w,m}); return; }
+    const daysSince = Math.floor((Date.now() - m.masteredDate) / 86400000);
+    const needed = SR_INTERVALS[Math.min(m.reviewCount||0, SR_INTERVALS.length-1)];
+    if (daysSince >= needed) overdue.push({w,m});
+    else if (needed - daysSince <= 1) upcomingToday.push({w,m});
+    else upcoming.push({w,m});
+  });
+
+  // إحصاء سريع
+  const totalMastered = overdue.length + upcomingToday.length + upcoming.length + sealed.length;
+  const statsRow = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 16px;background:white;border-bottom:1px solid #e2e8f0;">
+    <div style="text-align:center;background:#fee2e2;border:2px solid var(--red);border-radius:12px;padding:10px 4px;">
+      <div style="font-size:22px;font-weight:900;color:var(--red-dark);">${overdue.length}</div>
+      <div style="font-size:10px;font-weight:800;color:var(--red-dark);">متأخرة</div>
+    </div>
+    <div style="text-align:center;background:#fef9c3;border:2px solid var(--gold);border-radius:12px;padding:10px 4px;">
+      <div style="font-size:22px;font-weight:900;color:#854d0e;">${upcomingToday.length}</div>
+      <div style="font-size:10px;font-weight:800;color:#854d0e;">اليوم</div>
+    </div>
+    <div style="text-align:center;background:#dbeafe;border:2px solid var(--blue);border-radius:12px;padding:10px 4px;">
+      <div style="font-size:22px;font-weight:900;color:var(--blue-dark);">${upcoming.length}</div>
+      <div style="font-size:10px;font-weight:800;color:var(--blue-dark);">قادمة</div>
+    </div>
+    <div style="text-align:center;background:#dcfce7;border:2px solid var(--green);border-radius:12px;padding:10px 4px;">
+      <div style="font-size:22px;font-weight:900;color:var(--green-dark);">${sealed.length}</div>
+      <div style="font-size:10px;font-weight:800;color:var(--green-dark);">ثابتة</div>
+    </div>
+  </div>`;
+
+  // شرح منحنى النسيان
+  const curveInfo = `<div style="margin:12px 16px;background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:14px;padding:14px 16px;color:white;">
+    <div style="font-size:13px;font-weight:900;margin-bottom:8px;">📐 منحنى Ebbinghaus للنسيان</div>
+    <div style="font-size:11px;opacity:.8;line-height:1.7;margin-bottom:10px;">الذاكرة بتنقص مع الوقت حسب: <span style="direction:ltr;display:inline-block;font-family:'Nunito',sans-serif;font-size:12px;font-weight:900;color:#93c5fd;">R = e⁻ᵗ/ˢ</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      ${SR_INTERVALS.map((d,i)=>`<div style="background:rgba(255,255,255,.1);border-radius:8px;padding:4px 8px;font-size:11px;font-weight:700;"><span style="color:#93c5fd;">مراجعة ${i+1}</span><br>بعد ${d} يوم</div>`).join('')}
+    </div>
+  </div>`;
+
+  function _wordSRCard(w, m, status) {
+    const ret = _calcRetention(m);
+    const retColor = ret===null?'var(--mid)':ret>=70?'var(--green)':ret>=40?'var(--gold)':'var(--red)';
+    const retBg = ret===null?'#f1f5f9':ret>=70?'var(--green-light)':ret>=40?'#fef9c3':'var(--red-light)';
+    const rc = m?.reviewCount || 0;
+    const totalReviews = SR_INTERVALS.length;
+    // Progress dots
+    const dots = Array.from({length:totalReviews},(_,i)=>
+      `<div style="width:16px;height:16px;border-radius:50%;background:${i<rc?'var(--green)':'#e2e8f0'};display:flex;align-items:center;justify-content:center;font-size:8px;color:white;">${i<rc?'✓':''}</div>`
+    ).join('');
+    const masteredStr = m?.masteredDate ? _fmtDateShort(m.masteredDate) : '—';
+    const nextDate = _nextReviewDate(m);
+    const statusBadge = status==='overdue'
+      ? `<span style="background:var(--red-light);color:var(--red-dark);border:1.5px solid var(--red);border-radius:20px;padding:1px 8px;font-size:10px;font-weight:800;">⚠️ متأخرة</span>`
+      : status==='today'
+      ? `<span style="background:#fef9c3;color:#854d0e;border:1.5px solid var(--gold);border-radius:20px;padding:1px 8px;font-size:10px;font-weight:800;">📅 اليوم</span>`
+      : status==='upcoming'
+      ? `<span style="background:var(--blue-light);color:var(--blue-dark);border:1.5px solid var(--blue);border-radius:20px;padding:1px 8px;font-size:10px;font-weight:800;">⏰ ${nextDate}</span>`
+      : `<span style="background:var(--green-light);color:var(--green-dark);border:1.5px solid var(--green);border-radius:20px;padding:1px 8px;font-size:10px;font-weight:800;">🏆 ثابتة</span>`;
+    return `<div style="background:white;border:2px solid #e2e8f0;border-radius:14px;padding:12px 14px;margin-bottom:8px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:16px;font-weight:900;color:var(--dark);direction:ltr;font-family:'Nunito',sans-serif;">${w.word}</div>
+          <div style="font-size:12px;color:var(--blue);font-weight:700;">${w.translation}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+          ${statusBadge}
+          ${ret!==null?`<div style="font-size:10px;font-weight:800;color:${retColor};">ذاكرة ${ret}%</div>`:''}
+        </div>
+      </div>
+      ${ret!==null?`<div style="background:#f1f5f9;border-radius:20px;height:6px;margin-bottom:8px;overflow:hidden;">
+        <div style="height:100%;width:${ret}%;background:${retColor};border-radius:20px;transition:width .5s;"></div>
+      </div>`:''}
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;gap:4px;align-items:center;">${dots}</div>
+        <div style="font-size:10px;color:var(--mid);font-weight:700;">اتقنت ${masteredStr}</div>
+      </div>
+    </div>`;
+  }
+
+  let html = statsRow + curveInfo + '<div style="padding:0 16px 100px;">';
+
+  if (inProgress.length > 0 && totalMastered === 0) {
+    html += `<div style="text-align:center;padding:30px 0;color:var(--mid);">
+      <div style="font-size:48px;margin-bottom:10px;">🌱</div>
+      <div style="font-size:15px;font-weight:800;">لسه ما اتقنتش كلمات</div>
+      <div style="font-size:13px;margin-top:6px;">روّح لجلسة اليوم وابدأ المراجعة!</div>
+    </div>`;
+  }
+
+  if (overdue.length > 0) {
+    html += `<div style="font-size:13px;font-weight:900;color:var(--red-dark);margin:12px 0 8px;">⚠️ متأخرة (${overdue.length})</div>`;
+    overdue.forEach(({w,m}) => { html += _wordSRCard(w,m,'overdue'); });
+  }
+  if (upcomingToday.length > 0) {
+    html += `<div style="font-size:13px;font-weight:900;color:#854d0e;margin:12px 0 8px;">📅 مراجعة اليوم (${upcomingToday.length})</div>`;
+    upcomingToday.forEach(({w,m}) => { html += _wordSRCard(w,m,'today'); });
+  }
+  if (upcoming.length > 0) {
+    html += `<div style="font-size:13px;font-weight:900;color:var(--blue-dark);margin:12px 0 8px;">⏰ قادمة (${upcoming.length})</div>`;
+    upcoming.sort((a,b)=>a.m.masteredDate-b.m.masteredDate).forEach(({w,m}) => { html += _wordSRCard(w,m,'upcoming'); });
+  }
+  if (sealed.length > 0) {
+    html += `<div style="font-size:13px;font-weight:900;color:var(--green-dark);margin:12px 0 8px;">🏆 ثابتة في ذاكرتك (${sealed.length})</div>`;
+    sealed.forEach(({w,m}) => { html += _wordSRCard(w,m,'sealed'); });
+  }
+  html += '</div>';
+  document.getElementById('stats-tab-body').innerHTML = html;
+}
+
+function _renderQuizStats() {
+  // ── نفس الكود القديم لـ renderWordStatsChart ──
+  const stats = loadWordStats();
+  const words = mwData.words.filter(w => stats[w.id]);
+  const c = document.getElementById('stats-tab-body');
+  if (words.length === 0) {
+    c.innerHTML = `<div style="padding:40px 20px;text-align:center;"><div style="font-size:60px;margin-bottom:16px;">📊</div>
+      <div style="font-size:18px;font-weight:800;color:var(--dark);margin-bottom:8px;">لا يوجد إحصائيات لسه</div>
+      <div style="font-size:14px;color:var(--mid);">حل كويز الأول عشان تشوف نتائجك</div></div>`;
+    return;
+  }
+  words.sort((a,b) => {
+    const ra=stats[a.id],rb=stats[b.id];
+    return (ra.correct/(ra.correct+ra.wrong))-(rb.correct/(rb.correct+rb.wrong));
+  });
+  const totalCorrect=words.reduce((s,w)=>s+stats[w.id].correct,0);
+  const totalWrong=words.reduce((s,w)=>s+stats[w.id].wrong,0);
+  const totalAll=totalCorrect+totalWrong;
+  const overallPct=totalAll?Math.round((totalCorrect/totalAll)*100):0;
+  let bars='';
+  words.forEach(w=>{
+    const s=stats[w.id],total=s.correct+s.wrong;
+    const pct=Math.round((s.correct/total)*100);
+    const barColor=pct>=80?'var(--green)':pct>=50?'var(--gold)':'var(--red)';
+    const emoji=pct>=80?'✅':pct>=50?'⚠️':'❌';
+    bars+=`<div style="background:white;border:2px solid #e2e8f0;border-radius:14px;padding:12px 14px;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div><div style="font-size:15px;font-weight:800;color:var(--dark);direction:ltr;font-family:'Nunito',sans-serif;">${w.word}</div>
+        <div style="font-size:12px;color:var(--mid);">${w.translation}</div></div>
+        <div style="text-align:left;">
+          <div style="font-size:17px;font-weight:900;color:${barColor};">${pct}% ${emoji}</div>
+          <div style="font-size:11px;color:var(--mid);">✅${s.correct} ❌${s.wrong} / ${total}</div>
+        </div>
+      </div>
+      <div style="background:#e2e8f0;border-radius:20px;height:10px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${barColor};border-radius:20px;"></div>
+      </div>
+    </div>`;
+  });
+  c.innerHTML=`<div style="padding:16px 16px 100px;">
+    <div style="background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:white;border-radius:18px;padding:18px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:13px;font-weight:700;opacity:.85;margin-bottom:4px;">إجمالي الإجابات</div>
+      <div style="font-size:42px;font-weight:900;">${overallPct}%</div>
+      <div style="font-size:13px;opacity:.9;">✅ ${totalCorrect} صح &nbsp;|&nbsp; ❌ ${totalWrong} غلط &nbsp;|&nbsp; 📝 ${totalAll} سؤال</div>
+      <div style="font-size:12px;opacity:.75;margin-top:4px;">${words.length} كلمة متدربة</div>
+    </div>
+    <div style="font-size:13px;font-weight:800;color:var(--mid);margin-bottom:10px;">الكلمات (الأضعف أولاً)</div>
+    ${bars}
+  </div>`;
+}
+
+// ---- LEARN MODE ----
+function startMwLearn(catId) {
+  loadMwData();
+  const words = catId ? mwData.words.filter(w => w.catId === catId) : [...mwData.words];
+  if (words.length === 0) { alert('لا يوجد كلمات في هذا التصنيف'); return; }
+  mwState.currentScreen = 'learn';
+  mwState.learnWords = shuffle([...words]);
+  mwState.learnIdx = 0;
+  renderMwLearnCard();
+}
+
+function renderMwLearnCard() {
+  const words = mwState.learnWords, idx = mwState.learnIdx, w = words[idx];
+  document.getElementById('header-title').textContent = `Learn • ${idx+1}/${words.length}`;
+  const stats = loadWordStats(), ws = stats[w.id];
+  let masteryBadge = '';
+  if (ws) {
+    const t = ws.correct + ws.wrong, pct = Math.round((ws.correct/t)*100);
+    const color = pct>=70?'var(--green)':pct>=40?'var(--gold)':'var(--red)';
+    const emoji = pct>=70?'✅':pct>=40?'⚠️':'❌';
+    masteryBadge = `<div style="text-align:center;margin-bottom:10px;"><span style="background:${color}22;color:${color};border:2px solid ${color};border-radius:20px;padding:3px 14px;font-size:12px;font-weight:800;">${emoji} إتقان ${pct}% (✅${ws.correct} ❌${ws.wrong})</span></div>`;
+  } else {
+    masteryBadge = `<div style="text-align:center;margin-bottom:10px;"><span style="background:#f1f5f9;color:var(--mid);border:2px solid #e2e8f0;border-radius:20px;padding:3px 14px;font-size:12px;font-weight:700;">🆕 جديدة — لم تُختبر بعد</span></div>`;
+  }
+  const formsTableHTML = (w.forms && w.forms.length > 0) ? `<div class="mw-word-section"><div class="mw-word-section-title">📋 كل التصريفات</div><div style="text-align:center;margin-top:8px;"><button class="wfv-btn" style="font-size:14px;padding:10px 24px;" onclick="openWfv('${w.id}')">🌿 WFV — Word Family Visualization</button></div></div>` : '';
+  const displayedBox = w.displayedForm ? `<div class="displayed-form-box"><div class="displayed-form-label">📖 الشكل اللي ظهر في الكتاب</div><div class="displayed-form-word">${w.displayedForm}</div>${w.displayedFormTranslation?`<div style="font-size:13px;font-weight:700;color:#92400e;margin-top:4px;">${w.displayedFormTranslation}</div>`:''} ${w.displayedFormSentence?`<div style="font-size:12px;color:#78350f;direction:ltr;font-family:'Nunito',sans-serif;margin-top:8px;font-style:italic;">&ldquo;${w.displayedFormSentence}&rdquo;</div>`:''} ${w.displayedFormSentenceTrans?`<div style="font-size:12px;color:#92400e;margin-top:4px;">${w.displayedFormSentenceTrans}</div>`:''}</div>` : '';
+  const baseFormBadge = w.baseForm ? `<div style="text-align:center;margin-bottom:8px;"><span class="base-form-badge"><span style="font-size:11px;font-weight:700;color:var(--mid);">الجذر</span><span class="base-form-text">${w.baseForm}</span>${w.baseFormTranslation?`<span style="font-size:12px;color:var(--purple-dark);font-weight:700;margin-right:4px;">— ${w.baseFormTranslation}</span>`:''}</span></div>` : '';
+  document.getElementById('content').innerHTML = `<div class="mw-learn-screen">
+    ${masteryBadge}
+    <div class="mw-word-card">
+      ${baseFormBadge}
+      <div class="mw-word-main">${w.word}</div>
+      ${w.pronunciation ? `<div class="mw-word-pron">/${w.pronunciation}/</div>` : ''}
+      ${w.localPron ? `<div style="text-align:center;font-size:13px;color:var(--mid);margin-bottom:8px;">${w.localPron}</div>` : ''}
+      <div class="mw-word-trans">${w.translation}</div>
+      <hr class="mw-word-divider">
+      ${w.type ? `<div class="mw-word-tags" style="justify-content:center;margin-bottom:10px;"><span class="mw-tag">${w.type}</span></div>` : ''}
+      ${w.definition ? `<div class="mw-word-section"><div class="mw-word-section-title">📖 Definition</div><div class="mw-word-section-body">${w.definition}</div></div>` : ''}
+      ${displayedBox}
+      ${w.examples ? `<div class="mw-word-section"><div class="mw-word-section-title">💬 Example</div><div class="mw-word-section-body">${w.examples.split('\\n')[0]}</div></div>` : ''}
+      ${formsTableHTML}
+      ${w.synonyms ? `<div class="mw-word-section"><div class="mw-word-section-title">🔁 Synonyms</div><div class="mw-word-section-body">${w.synonyms}</div></div>` : ''}
+    </div>
+    <div class="mw-nav-arrows">
+      <button class="mw-nav-arrow" ${idx===words.length-1?'disabled':''} onclick="mwState.learnIdx++;renderMwLearnCard()">→</button>
+      <span class="mw-counter">${idx+1} / ${words.length}</span>
+      <button class="mw-nav-arrow" ${idx===0?'disabled':''} onclick="mwState.learnIdx--;renderMwLearnCard()">←</button>
+    </div>
+    <button class="island-action go" style="margin-top:0;" onclick="speakText('${w.word.replace(/'/g,"\\'")}')" >🔊 استمع للنطق</button>
+  </div>`;
+  setTimeout(() => speakText(w.word), 400);
+}
+
+// ---- QUIZ MODE ----
+function startMwQuiz(catId) {
+  loadMwData();
+  const words = catId ? mwData.words.filter(w => w.catId === catId) : [...mwData.words];
+  if (words.length < 2) { alert('تحتاج على الأقل كلمتين لبدء الكويز'); return; }
+  mwState.currentScreen = 'quiz';
+  mwState.quizCatId = catId;
+  mwState.masteryMap = {};
+  const baseWords = shuffle([...words]);
+  mwState.quizQueue = baseWords.map(w => ({ wordId: w.id, mode: 'mc' }));
+  mwState.quizDone = 0; mwState.quizTotal = baseWords.length; mwState.quizScore = 0;
+  baseWords.forEach(w => { mwState.masteryMap[w.id] = { mcCorrect: 0, typed: false }; });
+  renderMwQuizCard();
+}
+
+function renderMwQuizCard() {
+  if (mwState.quizQueue.length === 0) { renderMwQuizResults(); return; }
+  const item = mwState.quizQueue[0];
+  const w = mwData.words.find(x => x.id === item.wordId);
+  if (!w) { mwState.quizQueue.shift(); renderMwQuizCard(); return; }
+  document.getElementById('header-title').textContent = `Quiz • ${mwState.quizDone}/${mwState.quizTotal}`;
+  const c = document.getElementById('content');
+  const pct = Math.round((mwState.quizDone/Math.max(mwState.quizTotal,1))*100);
+  const progBar = `<div style="background:#e2e8f0;border-radius:10px;height:8px;margin:0 16px 16px;overflow:hidden;"><div style="height:100%;background:var(--blue);border-radius:10px;width:${pct}%;transition:width .4s;"></div></div>`;
+  if (item.mode === 'mc') {
+    const opts = shuffle([w.translation, ...getSmartDistractors(w, mwData.words, 3)]);
+    c.innerHTML = `<div style="padding-top:16px;">${progBar}
+      <div class="mw-quiz-card" style="margin:0 16px;">
+        <div class="mw-quiz-prompt">ما معنى هذه الكلمة؟</div>
+        <div class="mw-quiz-word">${getTestWord(w)}</div>
+        ${w.pronunciation?`<div style="text-align:center;font-size:13px;color:var(--mid);font-family:'Nunito',sans-serif;margin-bottom:10px;">/${w.pronunciation}/</div>`:''}
+      </div>
+      <div class="options-col" style="margin-top:10px;">
+        ${opts.map(o=>`<div class="opt" data-val="${o.replace(/"/g,'&quot;')}" onclick="checkMwQuiz(this,'${o.replace(/'/g,"\\'")}','${w.translation.replace(/'/g,"\\'")}','${w.id}','mc')">${o}</div>`).join('')}
+      </div>
+      <div id="mw-quiz-info-panel" style="padding:0 16px;margin-top:14px;display:none;"></div>
+    </div>`;
+  } else {
+    c.innerHTML = `<div style="padding-top:16px;">${progBar}
+      <div class="mw-quiz-card" style="margin:0 16px;">
+        <div class="mw-quiz-prompt" style="color:var(--green-dark);">✍️ اكتب الكلمة بالإنجليزي</div>
+        <div style="font-size:20px;font-weight:800;color:var(--blue-dark);text-align:center;margin:10px 0;">${w.translation}</div>
+        ${w.definition?`<div style="font-size:12px;color:var(--mid);text-align:center;direction:ltr;font-family:'Nunito',sans-serif;">${w.definition}</div>`:''}
+      </div>
+      <div style="padding:10px 16px;">
+        <input id="type-input" type="text" placeholder="اكتب الكلمة..." autocomplete="off" autocorrect="off" spellcheck="false"
+          style="width:100%;padding:14px;font-size:16px;border:2px solid #e2e8f0;border-radius:12px;text-align:center;direction:ltr;font-family:'Nunito',sans-serif;box-sizing:border-box;margin-bottom:10px;outline:none;"
+          onkeydown="if(event.key==='Enter')checkMwQuiz(null,this.value,'${getTestWord(w).replace(/'/g,"\\'")}','${w.id}','type')"/>
+        <button onclick="checkMwQuiz(null,document.getElementById('type-input').value,'${getTestWord(w).replace(/'/g,"\\'")}','${w.id}','type')"
+          style="width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;">تأكيد ✓</button>
+      </div>
+      <div id="mw-quiz-info-panel" style="padding:0 16px;margin-top:4px;display:none;"></div>
+    </div>`;
+    setTimeout(()=>document.getElementById('type-input')?.focus(), 200);
+  }
+}
+
+function checkMwQuiz(el, chosen, correct, wordId, mode) {
+  document.querySelectorAll('.opt').forEach(o => o.onclick = null);
+  const btn = document.querySelector('button[onclick*="checkMwQuiz"]');
+  if (btn) btn.onclick = null;
+  const inp = document.getElementById('type-input');
+  if (inp) inp.onkeydown = null;
+  const w = mwData.words.find(x => x.id === wordId);
+  const master = mwState.masteryMap[wordId];
+  const isCorrect = mode === 'mc' ? chosen === correct : chosen.trim().toLowerCase() === correct.trim().toLowerCase();
+  saveWordStat(wordId, isCorrect);
+  if (mode === 'mc') { if (isCorrect) { master.mcCorrect++; mwState.quizScore++; } else master.mcCorrect = 0; }
+  if (mode === 'mc') {
+    if (isCorrect) el.classList.add('correct-flash');
+    else { el.classList.add('wrong-flash'); document.querySelectorAll('.opt').forEach(o=>{ if(o.dataset.val===correct) o.classList.add('correct-flash'); }); }
+  } else { if (inp) inp.style.borderColor = isCorrect ? 'var(--green)' : 'var(--red)'; }
+  mwState.quizQueue.shift();
+  if (mode === 'mc') {
+    if (!isCorrect) { const at = Math.min(2+Math.floor(Math.random()*3), mwState.quizQueue.length); mwState.quizQueue.splice(at,0,{wordId,mode:'mc'}); }
+    else if (master.mcCorrect >= 3 && !master.typed) { master.typed = true; mwState.quizTotal++; mwState.quizQueue.unshift({wordId,mode:'type'}); }
+    else if (master.mcCorrect < 3) { const at = Math.min(3+Math.floor(Math.random()*4), mwState.quizQueue.length); mwState.quizQueue.splice(at,0,{wordId,mode:'mc'}); }
+    else mwState.quizDone++;
+  } else { if (!isCorrect) { const at = Math.min(2+Math.floor(Math.random()*3), mwState.quizQueue.length); mwState.quizQueue.splice(at,0,{wordId,mode:'type'}); } else mwState.quizDone++; }
+  let infoHTML = '';
+  if (w) {
+    infoHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div><div style="font-size:20px;font-weight:900;color:var(--dark);direction:ltr;font-family:'Nunito',sans-serif;">${w.word}</div>
+      ${w.pronunciation?`<div style="font-size:12px;color:var(--mid);font-family:'Nunito',sans-serif;">/${w.pronunciation}/</div>`:''}
+      ${w.localPron?`<div style="font-size:12px;color:var(--mid);">${w.localPron}</div>`:''}</div>
+      <button onclick="speakText('${w.word.replace(/'/g,"\\'")}');" style="background:var(--blue-light);border:none;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;">🔊</button>
+    </div>
+    <div style="font-size:15px;font-weight:700;color:var(--blue-dark);margin-bottom:8px;">${w.translation}</div>`;
+    if (w.type) infoHTML += `<div style="display:inline-block;background:var(--blue-light);color:var(--blue-dark);font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;margin-bottom:8px;">${w.type}</div>`;
+    if (w.examples) infoHTML += `<div style="background:#f8fafc;border-right:3px solid var(--blue);padding:7px 10px;border-radius:8px;font-size:12px;direction:ltr;font-family:'Nunito',sans-serif;color:var(--dark);">${w.examples.split('\n')[0]}</div>`;
+    if (w.displayedFormSentence) infoHTML += `<div style="margin-top:10px;background:#fef9c3;border:2px solid #eab308;border-radius:10px;padding:8px 12px;">
+      <div style="font-size:10px;font-weight:800;color:#92400e;margin-bottom:4px;">📖 الجملة الأصلية</div>
+      <div style="font-size:13px;direction:ltr;font-family:'Nunito',sans-serif;color:#78350f;font-style:italic;">&ldquo;${w.displayedFormSentence}&rdquo;</div>
+      ${w.displayedFormSentenceTrans ? `<div style="font-size:12px;color:#92400e;margin-top:4px;font-weight:600;">${w.displayedFormSentenceTrans}</div>` : ''}
+    </div>`;
+  }
+  let feedbackMsg = '';
+  if (mode === 'mc') {
+    feedbackMsg = isCorrect ? (master.mcCorrect>=3?'🏆 أتقنت الكلمة! دلوقتي اكتبها':`✅ صح! (${master.mcCorrect}/3)`) : `❌ الإجابة: ${correct} — هترجع تاني`;
+  } else feedbackMsg = isCorrect ? '🎉 كتبتها صح!' : `❌ الصح: ${correct}`;
+  const panel = document.getElementById('mw-quiz-info-panel');
+  if (panel) {
+    panel.innerHTML = `<div style="background:${isCorrect?'var(--green-light)':'var(--red-light)'};border:2px solid ${isCorrect?'var(--green)':'var(--red)'};border-radius:12px;padding:10px 14px;text-align:center;font-weight:800;font-size:15px;color:${isCorrect?'var(--green-dark)':'var(--red-dark)'};margin-bottom:12px;">${feedbackMsg}</div>
+      <div style="background:white;border:2px solid #e2e8f0;border-radius:14px;padding:14px;margin-bottom:12px;">${infoHTML}
+        ${w&&w.forms&&w.forms.length?`<div style="margin-top:10px;text-align:center;"><button class="wfv-btn" style="font-size:13px;padding:8px 18px;" onclick="openWfv('${w.id}')">🌿 WFV — Word Family</button></div>`:''}
+      </div>
+      <button onclick="renderMwQuizCard();" style="width:100%;padding:14px;background:var(--blue);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 4px 0 var(--blue-dark);">
+        ${mwState.quizQueue.length===0?'🏁 النتيجة':'التالي ←'}
+      </button>`;
+    panel.style.display = 'block';
+  }
+}
+
+function renderMwQuizResults() {
+  const total = mwState.quizDone, score = mwState.quizScore;
+  const pct = total ? Math.round((score/total)*100) : 100;
+  document.getElementById('header-title').textContent = 'نتيجة الكويز';
+  document.getElementById('content').innerHTML = `<div class="results" style="padding-top:40px;">
+    <span class="res-icon">${pct>=80?'🎉':pct>=60?'😊':'💪'}</span>
+    <div class="res-title">${pct>=80?'ممتاز!':pct>=60?'جيد!':'استمر!'}</div>
+    <div class="res-score">${score} / ${total}</div>
+    <div class="res-xp">${pct}%</div>
+    <button class="res-btn home" onclick="goHome()" style="margin-top:24px;">🏠 كلماتي</button>
+    <button class="res-btn retry" onclick="startMwQuiz(mwState.quizCatId)" style="margin-top:8px;">🔄 كويز جديد</button>
+  </div>`;
+}
+
+// ---- DRILL MODE ----
+const SR_INTERVALS = [1, 3, 7, 14, 30];
+
+function startMwWeakDrill() {
+  loadMwData();
+  const stats = loadWordStats();
+  const weakWords = mwData.words.filter(w => {
+    const s = stats[w.id];
+    if (!s) return false;
+    const t = s.correct + s.wrong;
+    return t > 0 && (s.correct/t) < 0.6;
+  });
+  if (weakWords.length === 0) { alert('ما عندكش كلمات ضعيفة دلوقتي! 🎉'); return; }
+  mwDrill.catId = null; mwDrill.words = shuffle([...weakWords]);
+  mwDrill.idx = 0; mwDrill.lives = 5; mwDrill.score = 0;
+  mwDrill.checked = false; mwDrill.wrongWords = []; mwDrill.isReviewRound = false;
+  mwState.currentScreen = 'drill';
+  _startDrillUI(`🎯 الكلمات الضعيفة • ${weakWords.length}`);
+}
+
+function startMwDrill(catId) {
+  loadMwData();
+  const words = catId ? mwData.words.filter(w => w.catId === catId) : [...mwData.words];
+  if (words.length < 1) { alert('لا يوجد كلمات للتدريب'); return; }
+  mwDrill.catId = catId; mwDrill.words = shuffle([...words]);
+  mwDrill.idx = 0; mwDrill.lives = 5; mwDrill.score = 0;
+  mwDrill.checked = false; mwDrill.wrongWords = []; mwDrill.isReviewRound = false;
+  mwState.currentScreen = 'drill';
+  _startDrillUI('⚡ Drill');
+}
+
+function _startDrillUI(title) {
+  document.getElementById('combo-wrap').classList.remove('hidden');
+  document.getElementById('bottom-nav').classList.add('hidden');
+  document.getElementById('mw-fab').classList.remove('show');
+  document.getElementById('header-title').textContent = title;
+  renderDrillQuestion();
+}
+
+function renderDrillQuestion() {
+  if (mwDrill.idx >= mwDrill.words.length) { renderDrillResults(); return; }
+  const w = mwDrill.words[mwDrill.idx];
+  mwDrill.direction = (mwDrill.idx % 2 === 0) ? 'ar2en' : 'en2ar';
+  mwDrill.checked = false;
+  const total = mwDrill.words.length, pct = Math.round((mwDrill.idx/total)*100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('streak-disp').textContent = mwDrill.score;
+  document.getElementById('header-title').textContent = `Drill • ${mwDrill.idx+1}/${total}`;
+  const livesHTML = '❤️'.repeat(mwDrill.lives) + (mwDrill.lives<5?'🖤'.repeat(5-mwDrill.lives):'');
+  const promptWord = mwDrill.direction==='ar2en' ? w.translation : getTestWord(w);
+  const promptHint = mwDrill.direction==='ar2en' ? (w.localPron||(w.pronunciation?`/${w.pronunciation}/`:'')) : '';
+  const dirLabel = mwDrill.direction==='ar2en' ? '🇬🇧 اكتب بالإنجليزي' : '🇦🇪 اكتب المعنى بالعربي';
+  const inputDir = mwDrill.direction==='ar2en' ? '' : 'direction:rtl;font-family:Cairo,sans-serif;';
+  document.getElementById('content').innerHTML = `<div class="drill-screen">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="drill-lives">${livesHTML}</div>
+      <div class="drill-score-chip">⭐ ${mwDrill.score}</div>
+    </div>
+    <div class="drill-prompt-card">
+      <div class="drill-prompt-label">${dirLabel}</div>
+      <div class="drill-prompt-word${mwDrill.direction==='ar2en'?' ar':''}" onclick="speakText('${w.word.replace(/'/g,"\\'")}')">
+        ${promptWord}
+      </div>
+      ${promptHint?`<div class="drill-prompt-hint">${promptHint}</div>`:''}
+      ${mwDrill.direction==='ar2en'?`<div style="margin-top:10px;font-size:20px;cursor:pointer;color:#64748b;" onclick="speakText('${w.word.replace(/'/g,"\\'")}')">🔊</div>`:''}
+    </div>
+    <div class="drill-input-wrap">
+      <input id="drill-inp" class="drill-input" style="${inputDir}" placeholder="اكتب هنا..." autocomplete="off" autocorrect="off" spellcheck="false"
+        oninput="document.getElementById('drill-btn').className='drill-check-btn ready';document.getElementById('drill-btn').textContent='تحقق';"
+        onkeydown="if(event.key==='Enter')handleDrillAction()">
+    </div>
+    <div id="drill-feedback" class="drill-feedback"></div>
+    <button id="drill-btn" class="drill-check-btn disabled" onclick="handleDrillAction()">تحقق</button>
+  </div>`;
+  setTimeout(() => document.getElementById('drill-inp')?.focus(), 100);
+}
+
+function handleDrillAction() {
+  if (mwDrill.checked) { mwDrill.idx++; renderDrillQuestion(); return; }
+  const inp = document.getElementById('drill-inp');
+  if (!inp || !inp.value.trim()) return;
+  mwDrill.checked = true;
+  const w = mwDrill.words[mwDrill.idx];
+  const correct = mwDrill.direction==='ar2en' ? getTestWord(w) : w.translation;
+  const isCorrect = inp.value.trim().toLowerCase().replace(/[.,!?]/g,'') === correct.toLowerCase().replace(/[.,!?]/g,'');
+  const fb = document.getElementById('drill-feedback'), btn = document.getElementById('drill-btn');
+  const ctxHTML = w.displayedFormSentence ? `<div style="margin-top:8px;background:#fef9c3;border:2px solid #eab308;border-radius:10px;padding:8px 12px;text-align:right;">
+    <div style="font-size:10px;font-weight:800;color:#92400e;margin-bottom:4px;">📖 الجملة الأصلية</div>
+    <div style="font-size:12px;direction:ltr;font-family:'Nunito',sans-serif;color:#78350f;font-style:italic;text-align:left;">&ldquo;${w.displayedFormSentence}&rdquo;</div>
+    ${w.displayedFormSentenceTrans ? `<div style="font-size:11px;color:#92400e;margin-top:4px;font-weight:600;text-align:right;">${w.displayedFormSentenceTrans}</div>` : ''}
+  </div>` : '';
+  const wfvBtnHTML = (w.forms && w.forms.length) ? `<div style="text-align:center;margin-top:10px;"><button class="wfv-btn" onclick="openWfv('${w.id}')">🌿 WFV — Word Family</button></div>` : '';
+  if (isCorrect) {
+    inp.className = 'drill-input correct';
+    fb.className = 'drill-feedback correct'; fb.style.display = 'block';
+    fb.innerHTML = `✅ صح!<div class="drill-answer-reveal">${correct}</div>${ctxHTML}${wfvBtnHTML}`;
+    mwDrill.score += 10;
+    saveWordStat(w.id, true);
+    speakText(w.word);
+  } else {
+    inp.className = 'drill-input wrong';
+    fb.className = 'drill-feedback wrong'; fb.style.display = 'block';
+    fb.innerHTML = `❌ الإجابة الصح:<div class="drill-answer-reveal">${correct}</div>${ctxHTML}${wfvBtnHTML}`;
+    saveWordStat(w.id, false);
+    if (!mwDrill.wrongWords.find(x => x.id === w.id)) mwDrill.wrongWords.push(w);
+    mwDrill.lives = Math.max(0, mwDrill.lives - 1);
+    if (mwDrill.lives <= 0) {
+      setTimeout(() => { if(confirm('انتهت القلوب! تبدأ من الأول؟')) startMwDrill(mwDrill.catId); else goHome(); }, 400);
+      return;
+    }
+  }
+  btn.className = 'drill-check-btn next';
+  btn.textContent = mwDrill.idx+1 >= mwDrill.words.length ? '🏁 النتيجة' : 'التالي →';
+}
+
+function renderDrillResults() {
+  const total = mwDrill.words.length;
+  const pct = Math.round((mwDrill.score/(total*10))*100);
+  document.getElementById('header-title').textContent = mwDrill.isReviewRound ? 'نتيجة المراجعة' : 'نتيجة التدريب';
+  const wrongCount = mwDrill.wrongWords.length;
+  const reviewBtn = (!mwDrill.isReviewRound && wrongCount > 0)
+    ? `<button class="res-btn" style="background:#f97316;box-shadow:0 4px 0 #ea580c;margin-top:8px;" onclick="startDrillReview()">🔁 راجع الغلط (${wrongCount} كلمة)</button>` : '';
+  document.getElementById('content').innerHTML = `<div class="results" style="padding-top:40px;">
+    <span class="res-icon">${pct>=80?'🎉':pct>=60?'😊':'💪'}</span>
+    <div class="res-title">${pct>=80?'ممتاز!':pct>=60?'كويس!':'استمر!'}</div>
+    <div class="res-score" style="color:var(--purple);">${mwDrill.score}</div>
+    <div class="res-xp">نقطة من ${total*10}</div>
+    <div style="display:flex;gap:6px;justify-content:center;font-size:22px;margin:8px 0;">
+      ${'❤️'.repeat(mwDrill.lives)}${'🖤'.repeat(5-mwDrill.lives)}
+    </div>
+    ${reviewBtn}
+    <button class="res-btn home" onclick="goHome()" style="margin-top:${reviewBtn?'8':'24'}px;">🏠 كلماتي</button>
+    <button class="res-btn retry" style="background:var(--purple);box-shadow:0 4px 0 var(--purple-dark);margin-top:8px;" onclick="startMwDrill(mwDrill.catId)">⚡ Drill تاني</button>
+  </div>`;
+}
+
+function startDrillReview() {
+  mwDrill.words = shuffle([...mwDrill.wrongWords]);
+  mwDrill.wrongWords = []; mwDrill.isReviewRound = true;
+  mwDrill.idx = 0; mwDrill.score = 0; mwDrill.checked = false;
+  document.getElementById('header-title').textContent = '🔁 مراجعة الغلط';
+  renderDrillQuestion();
+}
+
+// ---- ADD / EDIT / DELETE WORDS & CATEGORIES ----
+function openAddModal(prefillCatId) {
+  loadMwData();
+  document.getElementById('mw-edit-id').value = '';
+  document.getElementById('mw-modal-title').textContent = '➕ إضافة كلمة جديدة';
+  ['mw-word','mw-pron','mw-local-pron','mw-trans','mw-def','mw-examples','mw-type','mw-syn','mw-ant',
+   'mw-base-form','mw-base-form-trans','mw-displayed-form','mw-displayed-form-trans',
+   'mw-displayed-sentence','mw-displayed-sentence-trans']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('mw-forms-container').innerHTML = '';
+  populateCatSelect(prefillCatId || '');
+  document.getElementById('mw-add-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('mw-word')?.focus(), 200);
+}
+
+function editMwWord(wordId) {
+  loadMwData();
+  const w = mwData.words.find(x => x.id === wordId);
+  if (!w) return;
+  document.getElementById('mw-edit-id').value = w.id;
+  document.getElementById('mw-modal-title').textContent = '✏️ تعديل الكلمة';
+  document.getElementById('mw-word').value = w.word;
+  document.getElementById('mw-pron').value = w.pronunciation || '';
+  document.getElementById('mw-local-pron').value = w.localPron || '';
+  document.getElementById('mw-trans').value = w.translation;
+  document.getElementById('mw-def').value = w.definition || '';
+  document.getElementById('mw-examples').value = w.examples || '';
+  document.getElementById('mw-type').value = w.type || '';
+  document.getElementById('mw-syn').value = w.synonyms || '';
+  document.getElementById('mw-ant').value = w.antonyms || '';
+  document.getElementById('mw-base-form').value = w.baseForm || '';
+  document.getElementById('mw-base-form-trans').value = w.baseFormTranslation || '';
+  document.getElementById('mw-displayed-form').value = w.displayedForm || '';
+  document.getElementById('mw-displayed-form-trans').value = w.displayedFormTranslation || '';
+  document.getElementById('mw-displayed-sentence').value = w.displayedFormSentence || '';
+  document.getElementById('mw-displayed-sentence-trans').value = w.displayedFormSentenceTrans || '';
+  // Populate forms rows
+  const fc = document.getElementById('mw-forms-container');
+  fc.innerHTML = '';
+  (w.forms || []).forEach(f => addFormRow(f));
+  populateCatSelect(w.catId || '');
+  document.getElementById('mw-add-modal').classList.remove('hidden');
+}
+
+// ---- FORMS ROWS (modal) ----
+function addFormRow(data) {
+  const fc = document.getElementById('mw-forms-container');
+  const idx = fc.children.length;
+  const d = data || { form:'', type:'', translation:'', when:'' };
+  const div = document.createElement('div');
+  div.className = 'form-row';
+  div.innerHTML = `
+    <button type="button" class="form-row-del" onclick="this.parentElement.remove()">✕</button>
+    <div class="mw-input-row" style="margin-bottom:6px;">
+      <div>
+        <div class="mw-label" style="font-size:11px;">الشكل</div>
+        <input class="mw-input ltr form-inp-word" style="padding:8px 10px;font-size:13px;" placeholder="disciplined" value="${d.form||''}" autocomplete="off" spellcheck="false">
+      </div>
+      <div>
+        <div class="mw-label" style="font-size:11px;">النوع</div>
+        <input class="mw-input ltr form-inp-type" style="padding:8px 10px;font-size:13px;" placeholder="adjective" value="${d.type||''}">
+      </div>
+    </div>
+    <div class="mw-input-row">
+      <div>
+        <div class="mw-label" style="font-size:11px;">الترجمة</div>
+        <input class="mw-input form-inp-trans" style="padding:8px 10px;font-size:13px;" placeholder="منضبط" value="${d.translation||''}">
+      </div>
+      <div>
+        <div class="mw-label" style="font-size:11px;">امتى نستخدمه</div>
+        <input class="mw-input form-inp-when" style="padding:8px 10px;font-size:13px;" placeholder="لوصف شخص منتظم" value="${d.when||''}">
+      </div>
+    </div>`;
+  fc.appendChild(div);
+}
+
+function collectFormRows() {
+  const rows = document.querySelectorAll('#mw-forms-container .form-row');
+  const forms = [];
+  rows.forEach(row => {
+    const form = row.querySelector('.form-inp-word')?.value.trim();
+    if (!form) return;
+    forms.push({
+      form,
+      type: row.querySelector('.form-inp-type')?.value.trim() || '',
+      translation: row.querySelector('.form-inp-trans')?.value.trim() || '',
+      when: row.querySelector('.form-inp-when')?.value.trim() || ''
+    });
+  });
+  return forms;
+}
+
+function populateCatSelect(selectedId) {
+  const sel = document.getElementById('mw-cat');
+  sel.innerHTML = '<option value="">-- بدون تصنيف --</option>';
+  mwData.categories.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat.id; opt.textContent = cat.name;
+    if (cat.id === selectedId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function saveMwWord() {
+  const word = document.getElementById('mw-word').value.trim();
+  const translation = document.getElementById('mw-trans').value.trim();
+  if (!word) { document.getElementById('mw-word').focus(); return; }
+  if (!translation) { document.getElementById('mw-trans').focus(); return; }
+  const editId = document.getElementById('mw-edit-id').value;
+  const wordObj = {
+    id: editId || mwId(), word, translation,
+    pronunciation: document.getElementById('mw-pron').value.trim(),
+    localPron: document.getElementById('mw-local-pron').value.trim(),
+    definition: document.getElementById('mw-def').value.trim(),
+    examples: document.getElementById('mw-examples').value.trim(),
+    catId: document.getElementById('mw-cat').value,
+    type: document.getElementById('mw-type').value.trim(),
+    synonyms: document.getElementById('mw-syn').value.trim(),
+    antonyms: document.getElementById('mw-ant').value.trim(),
+    baseForm: document.getElementById('mw-base-form').value.trim(),
+    baseFormTranslation: document.getElementById('mw-base-form-trans').value.trim(),
+    displayedForm: document.getElementById('mw-displayed-form').value.trim(),
+    displayedFormTranslation: document.getElementById('mw-displayed-form-trans').value.trim(),
+    displayedFormSentence: document.getElementById('mw-displayed-sentence').value.trim(),
+    displayedFormSentenceTrans: document.getElementById('mw-displayed-sentence-trans').value.trim(),
+    forms: collectFormRows(),
+    addedAt: editId ? (mwData.words.find(w=>w.id===editId)?.addedAt||Date.now()) : Date.now()
+  };
+  if (editId) { const idx = mwData.words.findIndex(w=>w.id===editId); if(idx!==-1) mwData.words[idx]=wordObj; }
+  else mwData.words.push(wordObj);
+  saveMwData();
+  document.getElementById('mw-add-modal').classList.add('hidden');
+  renderMwScreen();
+}
+
+function deleteMwWord(wordId) {
+  if (BUILTIN_WORDS.find(w=>w.id===wordId)) { alert('⚙️ كلمات Mechatronics دائمة ومش ممكن تتمسح'); return; }
+  if (INFLUENCE_WORDS.find(w=>w.id===wordId)) { alert('📖 كلمات Influence دائمة ومش ممكن تتمسح'); return; }
+  if (!confirm('حذف الكلمة؟')) return;
+  mwData.words = mwData.words.filter(w=>w.id!==wordId);
+  saveMwData(); renderMwScreen();
+}
+
+function closeMwModal(e) { if(e.target===e.currentTarget) document.getElementById('mw-add-modal').classList.add('hidden'); }
+
+function saveMwCategory() {
+  const name = document.getElementById('mw-new-cat').value.trim();
+  if (!name) return;
+  mwData.categories.push({ id: mwId(), name });
+  saveMwData();
+  document.getElementById('mw-cat-modal').classList.add('hidden');
+  document.getElementById('mw-new-cat').value = '';
+  renderMwScreen();
+}
+
+function openCatActionSheet(catId, catName) {
+  mwState.activeCatForSheet = catId;
+  document.getElementById('mw-cat-sheet-name').textContent = '📁 ' + catName;
+  document.getElementById('mw-cat-action-sheet').classList.remove('hidden');
+}
+
+function mwCatSheetAction(action) {
+  document.getElementById('mw-cat-action-sheet').classList.add('hidden');
+  const catId = mwState.activeCatForSheet;
+  const cat = mwData.categories.find(c=>c.id===catId);
+  if (!cat) return;
+  if (action==='rename') {
+    const newName = prompt('اسم التصنيف الجديد:', cat.name);
+    if (newName&&newName.trim()) { cat.name=newName.trim(); saveMwData(); renderMwScreen(); }
+  } else if (action==='delete') {
+    if (BUILTIN_CATS.find(bc=>bc.id===catId)) { alert('⚙️ تصنيف دائم ومش ممكن يتمسح'); return; }
+    const count = mwData.words.filter(w=>w.catId===catId).length;
+    if (!confirm(`هتحذف "${cat.name}" و${count} كلمة. متأكد؟`)) return;
+    mwData.categories = mwData.categories.filter(c=>c.id!==catId);
+    mwData.words = mwData.words.filter(w=>w.catId!==catId);
+    saveMwData(); renderMwScreen();
+  }
+}
+
+function mwSheetAction(action) {
+  document.getElementById('mw-action-sheet').classList.add('hidden');
+  if (action==='addCat') { document.getElementById('mw-new-cat').value=''; document.getElementById('mw-cat-modal').classList.remove('hidden'); setTimeout(()=>document.getElementById('mw-new-cat')?.focus(),200); }
+  else if (action==='addWord') openAddModal();
+}
+
+document.getElementById('mw-fab').onclick = () => document.getElementById('mw-action-sheet').classList.remove('hidden');
+// ━━━ END: SECTION 5 — VOCAB SYSTEM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━ START: SECTION 6 — DAILY 15 + SPACED REPETITION ━━━━━━━━━━━━━━━━━━━━━
+// Mastery stages per word:
+//   0 = new           → mc × 3 correct → stage 1
+//   1 = mc done       → type-ar × 3   → stage 2
+//   2 = type-ar done  → type-en × 3   → stage 3 ✅ MASTERED
+//   3 = mastered      → SR reviews: 1, 3, 7, 14, 30 days
+
+function getDailySession() {
+  loadMwData();
+  const d = loadDailyData();
+  const today = todayStr();
+  if (d.lastDay !== today) {
+    d.lastDay = today; d.sessionWords = null; d.sessionDone = false;
+    saveDailyData(d);
+  }
+  const allWords = mwData.words;
+  if (allWords.length === 0) return null;
+  const mastery = d.mastery || {};
+  const dueMastered = allWords.filter(w => {
+    const m = mastery[w.id];
+    if (!m || m.stage < 3 || !m.masteredDate) return false;
+    const daysSince = Math.floor((Date.now() - m.masteredDate) / 86400000);
+    return daysSince >= SR_INTERVALS[Math.min(m.reviewCount||0, SR_INTERVALS.length-1)];
+  });
+  const inProgress = allWords.filter(w => { const m = mastery[w.id]; return !m || m.stage < 3; });
+  if (!d.sessionWords || d.sessionWords.length === 0) {
+    const pool = [];
+    // كل المراجعات المستحقة بدون حد اقصى
+    dueMastered.forEach(w => pool.push(w.id));
+    // + 15 كلمة جديدة او في التدريب
+    shuffle([...inProgress]).slice(0, 15).forEach(w => { if(!pool.includes(w.id)) pool.push(w.id); });
+    d.sessionWords = pool;
+    d.sessionDone = false;
+    saveDailyData(d);
+  }
+  return d;
+}
+
+function buildDailyQueue(sessionWordIds) {
+  loadMwData();
+  const mastery = (loadDailyData().mastery) || {};
+  const queue = [];
+  sessionWordIds.forEach(id => {
+    const m = mastery[id] || { stage:0 };
+    if      (m.stage === 0 || m.stage === undefined) queue.push({ wordId:id, mode:'mc' });
+    else if (m.stage === 1) queue.push({ wordId:id, mode:'type-ar' });
+    else if (m.stage === 2) queue.push({ wordId:id, mode:'type-en' });
+    else if (m.stage === 3) queue.push({ wordId:id, mode:'type-en', review:true });
+  });
+  return shuffle([...queue]);
+}
+
+function startDailySession() {
+  loadMwData();
+  if (mwData.words.length === 0) { alert('ما عندكش كلمات! ضيف كلمات الأول من كلماتي 📚'); return; }
+  const d = getDailySession();
+  if (!d || !d.sessionWords || d.sessionWords.length === 0) { alert('ما في كلمات كافية!'); return; }
+  if (d.sessionDone) { renderDailyComplete(d); return; }
+
+  const mastery = d.mastery || {};
+  const newWordIds      = d.sessionWords.filter(id => !mastery[id] || (mastery[id].stage||0) === 0);
+  const progressWordIds = d.sessionWords.filter(id => mastery[id] && mastery[id].stage > 0 && mastery[id].stage < 3);
+  const reviewWordIds   = d.sessionWords.filter(id => mastery[id] && (mastery[id].stage||0) >= 3);
+
+  document.getElementById('combo-wrap').classList.remove('hidden');
+  document.getElementById('bottom-nav').classList.add('hidden');
+  document.getElementById('mw-fab').classList.remove('show');
+  document.getElementById('header-title').textContent = '📅 جلسة اليوم';
+  mwState.currentScreen = 'daily';
+
+  function _revLabel(n) {
+    return (['أول','تاني','تالت','رابع','خامس (آخر)'][n] ?? `${n+1}`) + ' مراجعة';
+  }
+  function _fmtDate(ts) {
+    if (!ts) return '—';
+    const dd = new Date(ts);
+    return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()}`;
+  }
+
+  // ── بطاقة: جديدة ──
+  const newCardHTML = newWordIds.length > 0 ? `
+    <div style="display:flex;align-items:center;justify-content:space-between;background:#dbeafe;border:2px solid var(--blue);border-radius:14px;padding:14px 16px;">
+      <div>
+        <div style="font-size:16px;font-weight:900;color:var(--blue-dark);">${newWordIds.length} كلمة جديدة</div>
+        <div style="font-size:12px;color:var(--mid);margin-top:3px;">هتتعلمها من الصفر</div>
+      </div>
+      <div style="background:var(--blue);color:white;border-radius:8px;padding:4px 12px;font-size:12px;font-weight:900;font-family:'Nunito',sans-serif;">NEW</div>
+    </div>` : '';
+
+  // ── بطاقة: في التدريب ──
+  const progressCardHTML = progressWordIds.length > 0 ? `
+    <div style="display:flex;align-items:center;justify-content:space-between;background:#f3e8ff;border:2px solid var(--purple);border-radius:14px;padding:14px 16px;">
+      <div>
+        <div style="font-size:16px;font-weight:900;color:var(--purple-dark);">${progressWordIds.length} كلمة في التدريب</div>
+        <div style="font-size:12px;color:var(--mid);margin-top:3px;">لسه بتكملها</div>
+      </div>
+      <div style="background:var(--purple);color:white;border-radius:8px;padding:4px 12px;font-size:12px;font-weight:900;">↑</div>
+    </div>` : '';
+
+  // ── بطاقة: مراجعة (مجمّعة بالرقم والتاريخ) ──
+  let reviewCardHTML = '';
+  if (reviewWordIds.length > 0) {
+    const wordLines = reviewWordIds.map(id => {
+      const ww = mwData.words.find(x=>x.id===id);
+      const mm = mastery[id];
+      const rc = mm?.reviewCount || 0;
+      const ret = _calcRetention(mm);
+      const retColor = ret===null?'var(--mid)':ret>=70?'var(--green)':ret>=40?'var(--gold)':'var(--red)';
+      const nextDate = _nextReviewDate(mm);
+      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #fde68a;">
+        <div style="flex:1;min-width:0;">
+          <span style="font-size:13px;font-weight:800;color:#1e293b;direction:ltr;font-family:'Nunito',sans-serif;">${ww?.word||id}</span>
+          <span style="font-size:11px;color:#92400e;margin-right:6px;">• مراجعة ${rc+1}/${SR_INTERVALS.length}</span>
+        </div>
+        <div style="text-align:left;flex-shrink:0;">
+          ${ret!==null?`<div style="font-size:11px;font-weight:900;color:${retColor};">ذاكرة ${ret}%</div>`:''}
+          <div style="font-size:10px;color:#92400e;">الجاية: ${nextDate||'—'}</div>
+        </div>
+      </div>`;
+    }).join('');
+    reviewCardHTML = `
+      <div style="background:#fef9c3;border:2px solid var(--gold);border-radius:14px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:16px;font-weight:900;color:#854d0e;">${reviewWordIds.length} كلمة مراجعة</div>
+          <div style="background:#eab308;color:white;border-radius:8px;padding:4px 12px;font-size:12px;font-weight:900;">🔁 SR</div>
+        </div>
+        ${wordLines}
+      </div>`;
+  }
+
+  document.getElementById('content').innerHTML = `
+    <div style="padding:24px 20px;display:flex;flex-direction:column;gap:14px;">
+      <div style="text-align:center;font-size:22px;font-weight:900;color:var(--dark);">🎯 جلسة اليوم جاهزة</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${newCardHTML}
+        ${progressCardHTML}
+        ${reviewCardHTML}
+      </div>
+      <div style="font-size:13px;color:var(--mid);text-align:center;">${reviewWordIds.length>0?"🔁 "+reviewWordIds.length+" مراجعة + ":""}${newWordIds.length+progressWordIds.length} تعلم = إجمالي ${d.sessionWords.length} كلمة</div>
+      <button onclick="_launchDailySession()"
+        style="width:100%;padding:16px;background:var(--blue);color:white;border:none;border-radius:14px;font-size:17px;font-weight:900;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 4px 0 var(--blue-dark);">
+        ابدأ الجلسة ←
+      </button>
+    </div>`;
+}
+
+function _launchDailySession() {
+  const d = getDailySession();
+  mwState.dailySessionIds = d.sessionWords;
+  mwState.dailyQueue = buildDailyQueue(d.sessionWords);
+  mwState.dailyCorrect = 0;
+  mwState.dailyTotal = d.sessionWords.length;
+  renderDailyCard();
+}
+
+function renderDailyCard() {
+  if (mwState.dailyQueue.length === 0) {
+    const d2 = loadDailyData(), mastery2 = d2.mastery || {};
+    const remaining = (mwState.dailySessionIds||[]).filter(id=>(mastery2[id]?.stage||0)<3);
+    if (remaining.length > 0) {
+      const newQ = remaining.map(id => {
+        const stage = mastery2[id]?.stage || 0;
+        return { wordId:id, mode: stage===0?'mc':stage===1?'type-ar':'type-en' };
+      });
+      mwState.dailyQueue = shuffle(newQ);
+      mwState.dailyTotal += newQ.length;
+    } else { finishDailySession(); return; }
+  }
+  const item = mwState.dailyQueue[0];
+  // Safety: skip missing words (max 50 skips to prevent infinite loop)
+  let skips = 0;
+  let w = mwData.words.find(x=>x.id===item.wordId);
+  while (!w && mwState.dailyQueue.length > 0) {
+    mwState.dailyQueue.shift();
+    skips++;
+    if (skips > 50) { finishDailySession(); return; }
+    if (mwState.dailyQueue.length === 0) { finishDailySession(); return; }
+    w = mwData.words.find(x=>x.id===mwState.dailyQueue[0]?.wordId);
+  }
+  if (!w) { finishDailySession(); return; }
+  const d2 = loadDailyData(), mastery2 = d2.mastery || {};
+  const sealed = (mwState.dailySessionIds||[]).filter(id=>(mastery2[id]?.stage||0)>=3).length;
+  const total  = (mwState.dailySessionIds||[]).length || 15;
+  document.getElementById('header-title').textContent = `📅 ${sealed}/${total} ✅`;
+  document.getElementById('streak-disp').textContent = sealed;
+  document.getElementById('prog-fill').style.width = Math.round((sealed/Math.max(total,1))*100)+'%';
+  const m = getWordMastery(w.id);
+  let stageLabel;
+  if (item.review) {
+    const rc = m.reviewCount || 0;
+    const ret = _calcRetention(m);
+    const retStr = ret !== null ? ` • ذاكرة ${ret}%` : '';
+    stageLabel = `<div style="background:#fef9c3;border:2px solid #eab308;border-radius:20px;padding:2px 12px;font-size:12px;font-weight:800;color:#854d0e;display:inline-block;margin-bottom:12px;">🔁 مراجعة ${rc+1}/${SR_INTERVALS.length}${retStr}</div>`;
+  } else if (m.stage===0) {
+    stageLabel = `<div style="background:#dbeafe;border:2px solid var(--blue);border-radius:20px;padding:2px 12px;font-size:12px;font-weight:800;color:var(--blue-dark);display:inline-block;margin-bottom:12px;">🆕 كلمة جديدة • مرحلة ١: اختيار</div>`;
+  } else if (m.stage===1) {
+    stageLabel = `<div style="background:#dcfce7;border:2px solid var(--green);border-radius:20px;padding:2px 12px;font-size:12px;font-weight:800;color:var(--green-dark);display:inline-block;margin-bottom:12px;">✅ اخترت ٣ مرات • مرحلة ٢: اكتب المعنى</div>`;
+  } else {
+    stageLabel = `<div style="background:#f3e8ff;border:2px solid var(--purple);border-radius:20px;padding:2px 12px;font-size:12px;font-weight:800;color:var(--purple-dark);display:inline-block;margin-bottom:12px;">✅ كتبت المعنى • مرحلة ٣: اكتب الكلمة</div>`;
+  }
+  const sealedPct = Math.round((sealed/Math.max(total,1))*100);
+  const counterHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <div style="font-size:13px;font-weight:800;color:var(--mid);">✅ مختومة</div>
+    <div style="font-size:18px;font-weight:900;color:var(--blue-dark);">${sealed}<span style="font-size:13px;color:var(--mid);">/${total}</span></div>
+  </div>
+  <div style="background:#e2e8f0;border-radius:10px;height:10px;margin-bottom:16px;overflow:hidden;">
+    <div style="height:100%;background:var(--blue);border-radius:10px;width:${sealedPct}%;transition:width .6s;"></div>
+  </div>`;
+  const c = document.getElementById('content');
+  if (item.mode === 'mc') {
+    const opts = shuffle([w.translation, ...getSmartDistractors(w, mwData.words, 3)]);
+    c.innerHTML = `<div class="mw-learn-screen">${counterHTML}
+      <div style="text-align:center;">${stageLabel}</div>
+      <div class="mw-quiz-card">
+        <div class="mw-quiz-prompt">ما معنى هذه الكلمة؟</div>
+        <div class="mw-quiz-word">${getTestWord(w)}</div>
+        ${w.pronunciation?`<div style="text-align:center;font-size:13px;color:var(--mid);font-family:'Nunito',sans-serif;margin-bottom:8px;">/${w.pronunciation}/</div>`:''}
+        ${w.localPron?`<div style="text-align:center;font-size:13px;color:var(--mid);margin-bottom:8px;">${w.localPron}</div>`:''}
+      </div>
+      <div class="options-col">
+        ${opts.map(o=>`<div class="opt" data-val="${o.replace(/"/g,'&quot;')}" onclick="checkDailyCard(this,'${o.replace(/'/g,"\\'")}','${w.translation.replace(/'/g,"\\'")}','${w.id}','mc')">${o}</div>`).join('')}
+      </div>
+      <div id="daily-feedback-panel" style="padding:0 16px;margin-top:14px;display:none;"></div>
+    </div>`;
+  } else if (item.mode === 'type-ar') {
+    c.innerHTML = `<div class="mw-learn-screen">${counterHTML}
+      <div style="text-align:center;">${stageLabel}</div>
+      <div class="mw-quiz-card">
+        <div class="mw-quiz-prompt" style="color:var(--green-dark);">✍️ اكتب المعنى بالعربي</div>
+        <div style="font-size:24px;font-weight:900;color:var(--dark);text-align:center;direction:ltr;font-family:'Nunito',sans-serif;margin:10px 0;">${w.word}</div>
+        ${w.pronunciation?`<div style="text-align:center;font-size:13px;color:var(--mid);font-family:'Nunito',sans-serif;">/${w.pronunciation}/</div>`:''}
+      </div>
+      <div style="padding:10px 16px;">
+        <div style="font-size:11px;color:var(--mid);text-align:center;margin-bottom:6px;">📱 تأكد من تفعيل لوحة المفاتيح العربية</div>
+        <input id="daily-input" type="text" inputmode="text" lang="ar" placeholder="اكتب المعنى بالعربي..." autocomplete="off" spellcheck="false"
+          style="width:100%;padding:14px;font-size:16px;border:2px solid #e2e8f0;border-radius:12px;text-align:center;box-sizing:border-box;margin-bottom:10px;outline:none;font-family:'Cairo',sans-serif;"
+          onkeydown="if(event.key==='Enter')checkDailyCard(null,this.value,'${w.translation.replace(/'/g,"\\'")}','${w.id}','type-ar')"/>
+        <button onclick="checkDailyCard(null,document.getElementById('daily-input').value,'${w.translation.replace(/'/g,"\\'")}','${w.id}','type-ar')"
+          style="width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;">تأكيد ✓</button>
+      </div>
+      <div id="daily-feedback-panel" style="padding:0 16px;margin-top:4px;display:none;"></div>
+    </div>`;
+    setTimeout(()=>document.getElementById('daily-input')?.focus(),200);
+  } else {
+    // Stage 3: اختبر الـ displayedForm (الشكل اللي اتعلمه المتعلم) مش الجذر
+    const testWord3 = w.displayedForm || w.word;
+    const blankSentence = w.displayedFormSentence
+      ? w.displayedFormSentence.replace(new RegExp(testWord3.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), '___')
+      : '';
+    c.innerHTML = `<div class="mw-learn-screen">${counterHTML}
+      <div style="text-align:center;">${stageLabel}</div>
+      <div class="mw-quiz-card">
+        <div class="mw-quiz-prompt" style="color:var(--purple);">⌨️ اكتب الكلمة بالإنجليزي</div>
+        <div style="font-size:22px;font-weight:800;color:var(--blue-dark);text-align:center;margin:10px 0;">${w.translation}</div>
+        ${blankSentence ? `<div style="font-size:13px;color:var(--mid);text-align:center;direction:ltr;font-family:'Nunito',sans-serif;margin-top:6px;font-style:italic;background:#f8fafc;border-radius:8px;padding:8px 12px;">"${blankSentence}"</div>` : (w.definition?`<div style="font-size:12px;color:var(--mid);text-align:center;direction:ltr;font-family:'Nunito',sans-serif;margin-top:4px;">${w.definition.split('—')[0].trim()}</div>`:'')}
+      </div>
+      <div style="padding:10px 16px;">
+        <input id="daily-input" type="text" placeholder="اكتب الكلمة بالإنجليزي..." autocomplete="off" autocorrect="off" spellcheck="false"
+          style="width:100%;padding:14px;font-size:16px;border:2px solid #e2e8f0;border-radius:12px;text-align:center;direction:ltr;box-sizing:border-box;margin-bottom:10px;outline:none;font-family:'Nunito',sans-serif;"
+          onkeydown="if(event.key==='Enter')checkDailyCard(null,this.value,'${testWord3.replace(/'/g,"\\'")}','${w.id}','type-en')"/>
+        <button onclick="checkDailyCard(null,document.getElementById('daily-input').value,'${testWord3.replace(/'/g,"\\'")}','${w.id}','type-en')"
+          style="width:100%;padding:14px;background:var(--purple);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;">تأكيد ✓</button>
+      </div>
+      <div id="daily-feedback-panel" style="padding:0 16px;margin-top:4px;display:none;"></div>
+    </div>`;
+    setTimeout(()=>document.getElementById('daily-input')?.focus(),200);
+  }
+}
+
+function checkDailyCard(el, chosen, correct, wordId, mode) {
+  document.querySelectorAll('.opt').forEach(o=>o.onclick=null);
+  const btn = document.querySelector('button[onclick*="checkDailyCard"]');
+  if (btn) btn.onclick = null;
+  const inp = document.getElementById('daily-input');
+  if (inp) inp.onkeydown = null;
+  const w = mwData.words.find(x=>x.id===wordId);
+  const m = getWordMastery(wordId);
+  let isCorrect;
+  if (mode==='mc') isCorrect = chosen===correct;
+  else if (mode==='type-ar') {
+    const c1=chosen.trim(), c2=correct.trim();
+    const tokens = c2.split(/[\/،,]/).map(t=>t.trim()).filter(t=>t.length>1);
+    isCorrect = c1===c2 || tokens.some(token=>c1.toLowerCase()===token.toLowerCase());
+  } else isCorrect = chosen.trim().toLowerCase()===correct.trim().toLowerCase();
+  saveWordStat(wordId, isCorrect);
+  if (isCorrect) mwState.dailyCorrect++;
+  const wasStage3 = (m.stage === 3);
+  if (mode==='mc')           { if(isCorrect) m.mcCount=(m.mcCount||0)+1; else m.mcCount=0; }
+  else if (mode==='type-ar') { if(isCorrect) m.arCount=(m.arCount||0)+1; else m.arCount=0; }
+  else                       { if(isCorrect) m.enCount=(m.enCount||0)+1; else m.enCount=0; }
+  let promoted=false, sealed=false, reviewDone=false;
+  if      (mode==='mc'      &&(m.mcCount||0)>=3&&(m.stage||0)<1) { m.stage=1; promoted=true; }
+  else if (mode==='type-ar' &&(m.arCount||0)>=3&&(m.stage||0)<2) { m.stage=2; promoted=true; }
+  else if (mode==='type-en' &&(m.enCount||0)>=3&&(m.stage||0)<3) { m.stage=3; m.masteredDate=Date.now(); m.reviewCount=0; sealed=true; }
+  else if (wasStage3 && isCorrect) {
+    m.reviewCount = (m.reviewCount||0)+1;
+    m.masteredDate = Date.now();
+    reviewDone = true;
+  }
+  setWordMastery(wordId, m);
+  if (mode==='mc') {
+    if (isCorrect) el?.classList.add('correct-flash');
+    else { el?.classList.add('wrong-flash'); document.querySelectorAll('.opt').forEach(o=>{ if(o.dataset.val===correct) o.classList.add('correct-flash'); }); }
+  } else { if(inp) inp.style.borderColor = isCorrect?'var(--green)':'var(--red)'; }
+  mwState.dailyQueue.shift();
+  if (!isCorrect) {
+    const at=Math.min(2+Math.floor(Math.random()*3), mwState.dailyQueue.length);
+    mwState.dailyQueue.splice(at,0,{wordId,mode,review:wasStage3||undefined});
+  } else if (promoted) {
+    const nextMode = m.stage===1?'type-ar':'type-en';
+    const at=Math.min(4+Math.floor(Math.random()*5), mwState.dailyQueue.length);
+    mwState.dailyQueue.splice(at,0,{wordId,mode:nextMode});
+    mwState.dailyTotal++;
+  } else if (sealed || reviewDone) {
+    // ✅ خلصت — مش بترجع للـ queue
+  } else {
+    const at=Math.min(3+Math.floor(Math.random()*4), mwState.dailyQueue.length);
+    mwState.dailyQueue.splice(at,0,{wordId,mode});
+  }
+
+  // ── Promotion / Seal: شاشة احتفال كاملة ──
+  if (sealed || promoted) {
+    const isSealed = sealed;
+    const celebLabel = isSealed ? '🏆 اختمتها!' : '⬆️ ترقية!';
+    const celebSub   = isSealed
+      ? `"${w ? w.word : ''}" هتراجعها بعد ${SR_INTERVALS[0]} يوم`
+      : (m.stage===1 ? 'المرحلة التالية: اكتب المعنى بالعربي' : 'المرحلة التالية: اكتب الكلمة بالإنجليزي');
+    const celebColor = isSealed ? 'var(--green)' : 'var(--blue)';
+    const celebBg    = isSealed ? '#dcfce7' : '#dbeafe';
+    const celebEmoji = isSealed ? '🏆' : '⬆️';
+    document.getElementById('content').innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:65vh;text-align:center;padding:30px 24px;">
+        <div style="font-size:88px;animation:bounce 0.7s;">${celebEmoji}</div>
+        <div style="font-size:26px;font-weight:900;color:${celebColor};margin:14px 0 8px;">${celebLabel}</div>
+        <div style="font-size:15px;color:var(--mid);max-width:260px;line-height:1.6;">${celebSub}</div>
+        ${w ? `<div style="margin-top:18px;background:${celebBg};border:2px solid ${celebColor};border-radius:14px;padding:12px 20px;direction:ltr;font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:${celebColor};">${w.word}</div>` : ''}
+      </div>`;
+    setTimeout(() => renderDailyCard(), 1600);
+    return;
+  }
+
+  // ── Wrong answer: Active Recall — اكتب الإجابة الصح قبل ما تكمل ──
+  let progressNote='';
+  if (reviewDone) {
+    const nextIdx = Math.min(m.reviewCount, SR_INTERVALS.length-1);
+    const nextDays = SR_INTERVALS[nextIdx];
+    const nextDateStr = _nextReviewDate(m) || `بعد ${nextDays} يوم`;
+    const isLast = m.reviewCount >= SR_INTERVALS.length;
+    progressNote = isLast
+      ? `<div style="background:#dcfce7;border:2px solid var(--green);border-radius:10px;padding:10px 12px;text-align:center;margin-top:8px;">
+          <div style="font-weight:900;font-size:14px;color:var(--green-dark);">🏆 أتقنتها نهائياً! ثابتة في ذاكرتك ✅</div>
+          <div style="font-size:11px;color:var(--green-dark);margin-top:3px;">اكتملت كل المراجعات الـ${SR_INTERVALS.length}</div>
+        </div>`
+      : `<div style="background:#fef9c3;border:2px solid #eab308;border-radius:10px;padding:10px 12px;margin-top:8px;">
+          <div style="font-weight:900;font-size:14px;color:#854d0e;text-align:center;">✅ مراجعة ${m.reviewCount}/${SR_INTERVALS.length} اكتملت</div>
+          <div style="display:flex;gap:4px;justify-content:center;margin:8px 0;">
+            ${Array.from({length:SR_INTERVALS.length},(_,i)=>`<div style="width:18px;height:18px;border-radius:50%;background:${i<m.reviewCount?'var(--green)':'#e2e8f0'};display:flex;align-items:center;justify-content:center;font-size:9px;color:white;">${i<m.reviewCount?'✓':''}</div>`).join('')}
+          </div>
+          <div style="font-size:12px;color:#92400e;text-align:center;">المراجعة القادمة: <strong>${nextDateStr}</strong> (بعد ${nextDays} يوم)</div>
+        </div>`;
+  }
+  else if (isCorrect) { const needed=mode==='mc'?3-(m.mcCount||0):mode==='type-ar'?3-(m.arCount||0):3-(m.enCount||0); if(needed>0) progressNote=`<div style="background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:6px 12px;text-align:center;font-size:13px;font-weight:700;color:var(--green-dark);margin-top:8px;">✅ باقي ${needed} مرة للترقية</div>`; }
+  const feedbackText = isCorrect ? '✅ صح!' : `❌ الصح: ${correct}`;
+  const panel = document.getElementById('daily-feedback-panel');
+  if (!panel) return;
+
+  if (!isCorrect && mode !== 'mc') {
+    // Active Recall: خلّي المتعلم يكتب الإجابة الصح مرة واحدة قبل "التالي"
+    const arDir = mode==='type-ar' ? '' : 'direction:ltr;font-family:"Nunito",sans-serif;';
+    panel.innerHTML = `
+      <div style="background:var(--red-light);border:2px solid var(--red);border-radius:12px;padding:10px 14px;text-align:center;font-weight:800;font-size:15px;color:var(--red-dark);margin-bottom:10px;">${feedbackText}</div>
+      ${w?`<div style="background:white;border:2px solid #e2e8f0;border-radius:14px;padding:12px 14px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div><div style="font-size:18px;font-weight:900;direction:ltr;font-family:'Nunito',sans-serif;">${w.word}</div>
+          ${w.pronunciation?`<div style="font-size:12px;color:var(--mid);font-family:'Nunito',sans-serif;">/${w.pronunciation}/</div>`:''}</div>
+          <button onclick="speakText('${w.word.replace(/'/g,"\\'")}');" style="background:var(--blue-light);border:none;border-radius:50%;width:38px;height:38px;font-size:16px;cursor:pointer;">🔊</button>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:var(--blue-dark);margin-top:6px;">${w.translation}</div>
+      </div>`:''}
+      <div style="background:#fff7ed;border:2px solid var(--orange);border-radius:12px;padding:12px 14px;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:800;color:var(--orange);margin-bottom:8px;">✍️ اكتب الإجابة الصح مرة واحدة عشان تكمل:</div>
+        <input id="recall-input" type="text" placeholder="${mode==='type-ar'?'اكتب المعنى بالعربي...':'اكتب الكلمة بالإنجليزي...'}"
+          autocomplete="off" autocorrect="off" spellcheck="false"
+          style="width:100%;padding:12px;font-size:16px;border:2px solid #e2e8f0;border-radius:10px;text-align:center;${arDir}box-sizing:border-box;outline:none;"
+          onkeydown="if(event.key==='Enter')checkRecallWrite('${correct.replace(/'/g,"\\'")}','${mode}')">
+        <button onclick="checkRecallWrite('${correct.replace(/'/g,"\\'")}','${mode}')"
+          style="width:100%;padding:12px;margin-top:8px;background:var(--orange);color:white;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;">تأكيد</button>
+      </div>`;
+    panel.style.display = 'block';
+    setTimeout(()=>document.getElementById('recall-input')?.focus(),150);
+    return;
+  }
+
+  panel.innerHTML = `<div style="background:${isCorrect?'var(--green-light)':'var(--red-light)'};border:2px solid ${isCorrect?'var(--green)':'var(--red)'};border-radius:12px;padding:10px 14px;text-align:center;font-weight:800;font-size:15px;color:${isCorrect?'var(--green-dark)':'var(--red-dark)'};margin-bottom:10px;">${feedbackText}</div>
+    ${w?`<div style="background:white;border:2px solid #e2e8f0;border-radius:14px;padding:12px 14px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div><div style="font-size:18px;font-weight:900;direction:ltr;font-family:'Nunito',sans-serif;">${w.word}</div>
+        ${w.pronunciation?`<div style="font-size:12px;color:var(--mid);font-family:'Nunito',sans-serif;">/${w.pronunciation}/</div>`:''}</div>
+        <button onclick="speakText('${w.word.replace(/'/g,"\\'")}');" style="background:var(--blue-light);border:none;border-radius:50%;width:38px;height:38px;font-size:16px;cursor:pointer;">🔊</button>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:var(--blue-dark);margin-top:6px;">${w.translation}</div>
+      ${w.examples?`<div style="font-size:12px;color:var(--mid);margin-top:6px;direction:ltr;font-family:'Nunito',sans-serif;">${w.examples.split('\n')[0]}</div>`:''}
+      ${w.forms&&w.forms.length?`<div style="margin-top:10px;text-align:center;"><button class="wfv-btn" onclick="openWfv('${w.id}')">🌿 WFV</button></div>`:''}
+    </div>`:''}
+    ${progressNote}
+    <button onclick="renderDailyCard();"
+      style="width:100%;padding:14px;background:var(--blue);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 4px 0 var(--blue-dark);margin-top:8px;">
+      ${mwState.dailyQueue.length===0?'🏁 انهاء الجلسة':'التالي ←'}
+    </button>`;
+  panel.style.display = 'block';
+}
+
+function checkRecallWrite(correct, mode) {
+  const inp = document.getElementById('recall-input');
+  if (!inp) return;
+  const val = inp.value.trim();
+  let match;
+  if (mode === 'type-ar') {
+    const tokens = correct.split(/[\/،,]/).map(t=>t.trim()).filter(t=>t.length>1);
+    match = val === correct || tokens.some(t => val.toLowerCase() === t.toLowerCase());
+  } else {
+    match = val.toLowerCase() === correct.toLowerCase();
+  }
+  if (!match) {
+    inp.style.border = '2px solid var(--red)';
+    inp.style.background = 'var(--red-light)';
+    inp.placeholder = `اكتب: ${correct}`;
+    inp.value = '';
+    setTimeout(() => inp.focus(), 100);
+    return;
+  }
+  inp.style.border = '2px solid var(--green)';
+  inp.style.background = 'var(--green-light)';
+  inp.disabled = true;
+  // استبدل زرار تأكيد بـ "التالي"
+  const btn = inp.nextElementSibling;
+  if (btn) {
+    btn.textContent = mwState.dailyQueue.length === 0 ? '🏁 انهاء الجلسة' : 'التالي ←';
+    btn.style.background = 'var(--blue)';
+    btn.setAttribute('onclick', 'renderDailyCard()');
+  }
+}
+
+function finishDailySession() {
+  const d = loadDailyData();
+  d.sessionDone = true; saveDailyData(d);
+  const mastery = d.mastery || {};
+  const sealedToday = (d.sessionWords||[]).filter(id=>mastery[id]?.stage>=3).length;
+  const total = (d.sessionWords||[]).length;
+  document.getElementById('combo-wrap').classList.add('hidden');
+  document.getElementById('bottom-nav').classList.remove('hidden');
+  document.getElementById('header-title').textContent = 'كلماتي 📚';
+  document.getElementById('content').innerHTML = `<div class="results" style="padding-top:30px;">
+    <div style="font-size:64px;text-align:center;">🎉</div>
+    <div class="res-title">خلصت جلسة اليوم!</div>
+    <div style="font-size:15px;color:var(--mid);text-align:center;margin:8px 0;">راجعت ${total} كلمة اليوم</div>
+    <div style="display:flex;justify-content:center;gap:16px;margin:20px 0;">
+      <div style="background:var(--green-light);border:2px solid var(--green);border-radius:14px;padding:14px 20px;text-align:center;">
+        <div style="font-size:28px;font-weight:900;color:var(--green-dark);">${sealedToday}</div>
+        <div style="font-size:12px;color:var(--green-dark);font-weight:700;">كلمة مختومة ✅</div>
+      </div>
+      <div style="background:#dbeafe;border:2px solid var(--blue);border-radius:14px;padding:14px 20px;text-align:center;">
+        <div style="font-size:28px;font-weight:900;color:var(--blue-dark);">${total-sealedToday}</div>
+        <div style="font-size:12px;color:var(--blue-dark);font-weight:700;">في التدريب 🔄</div>
+      </div>
+    </div>
+    <div style="background:#fef9c3;border:2px solid #eab308;border-radius:14px;padding:14px 16px;margin:10px 0;text-align:center;">
+      <div style="font-size:13px;font-weight:800;color:#854d0e;">⏰ المراجعة القادمة للكلمات المختومة</div>
+      <div style="display:flex;gap:4px;justify-content:center;margin:6px 0;">
+        ${SR_INTERVALS.map((days,i)=>`<div style="background:${i===0?'#eab308':'#fef08a'};color:${i===0?'white':'#854d0e'};border-radius:8px;padding:3px 8px;font-size:11px;font-weight:800;">بعد ${days}ي</div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:#92400e;margin-top:4px;">حسب منحنى Ebbinghaus للنسيان • R = e⁻ᵗ/ˢ</div>
+    </div>
+    <button class="res-btn home" onclick="goHome()" style="margin-top:16px;">🏠 كلماتي</button>
+  </div>`;
+}
+
+function renderDailyComplete(d) {
+  const mastery = d.mastery || {};
+  const sealedToday = (d.sessionWords||[]).filter(id=>mastery[id]?.stage>=3).length;
+  const total = (d.sessionWords||[]).length;
+  document.getElementById('content').innerHTML = `<div class="results" style="padding-top:30px;">
+    <div style="font-size:64px;text-align:center;">✅</div>
+    <div class="res-title">أنجزت مهمة اليوم!</div>
+    <div style="font-size:14px;color:var(--mid);text-align:center;margin:8px 0;">${sealedToday}/${total} كلمة مختومة</div>
+    <div style="background:#fef9c3;border:2px solid #eab308;border-radius:14px;padding:14px 16px;margin:16px 0;text-align:center;">
+      <div style="font-size:13px;font-weight:800;color:#854d0e;">🌅 تعالى بكرة — جلستك الجديدة هتكون جاهزة!</div>
+    </div>
+    <button class="res-btn home" onclick="goHome()">🏠 كلماتي</button>
+  </div>`;
+}
+// ━━━ END: SECTION 6 — DAILY 15 + SPACED REPETITION ━━━━━━━━━━━━━━━━━━━━━━━
+
+// ━━━ START: SECTION 7 — INIT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function init() {
+  loadMwData();
+  renderMwScreen();
+}
+init();
+// ━━━ END: SECTION 7 — INIT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+</script>
+<!-- WFV POPUP -->
+<div id="wfv-overlay" class="wfv-overlay hidden" onclick="if(event.target===this)closeWfv()">
+  <div class="wfv-popup">
+    <div class="wfv-head">
+      <div class="wfv-title">Word Family Visualization</div>
+      <div id="wfv-word" class="wfv-word"></div>
+      <div class="wfv-tabs">
+        <button class="wfv-tab active" id="wfv-tab-inf" onclick="switchWfvTab('inf')">inflections</button>
+        <button class="wfv-tab" id="wfv-tab-der" onclick="switchWfvTab('der')">derivatives</button>
+      </div>
+    </div>
+    <div class="wfv-body" id="wfv-body"></div>
+    <button class="wfv-close" onclick="closeWfv()">✕ إغلاق</button>
+  </div>
+</div>
+
+<script>
+// ━━━ WFV ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let _wfvData = null, _wfvTab = 'inf';
+
+function openWfv(wordId) {
+  const all = (typeof mwData !== 'undefined' && mwData.words) ? mwData.words : [];
+  const w = all.find(x => x.id === wordId);
+  if (!w) return;
+  _wfvData = w;
+  _wfvTab = 'inf';
+  document.getElementById('wfv-word').textContent = w.baseForm || w.word;
+  document.getElementById('wfv-overlay').classList.remove('hidden');
+  renderWfvTab();
+}
+
+function closeWfv() {
+  document.getElementById('wfv-overlay').classList.add('hidden');
+}
+
+function switchWfvTab(tab) {
+  _wfvTab = tab;
+  document.getElementById('wfv-tab-inf').classList.toggle('active', tab === 'inf');
+  document.getElementById('wfv-tab-der').classList.toggle('active', tab === 'der');
+  renderWfvTab();
+}
+
+function renderWfvTab() {
+  const body = document.getElementById('wfv-body');
+  if (!_wfvData) return;
+  const forms = _wfvData.forms || [];
+  if (!forms.length) { body.innerHTML = '<div class="wfv-empty">لا توجد بيانات</div>'; return; }
+
+  // Split: inflections = verb conjugations & plurals (same base, different ending)
+  // derivatives = other word classes (nouns from verb, adjectives, etc.)
+  const baseForm = (_wfvData.baseForm || _wfvData.word || '').toLowerCase();
+  function isInflection(f) {
+    const t = (f.type || '').toLowerCase();
+    const fm = (f.form || '').toLowerCase();
+    // inflection if type says base form, plural, gerund, past, ing form, or same word class as base with conjugation
+    if (t.includes('base form') || t.includes('plural') || t.includes('gerund') || t.includes('past') || t.includes('ing form')) return true;
+    // inflection if form is just the base with common verb endings
+    const stripped = fm.replace(/(ing|ed|es|s)$/, '');
+    if (stripped === baseForm || fm === baseForm) return true;
+    // if type is purely verb (no slash mixing in noun/adj)
+    if (t === 'verb' || t === 'verb (gerund)' || t === 'verb (base)') return true;
+    return false;
+  }
+
+  const inf = forms.filter(isInflection);
+  const der = forms.filter(f => !isInflection(f));
+  const list = _wfvTab === 'inf' ? inf : der;
+
+  if (!list.length) {
+    body.innerHTML = '<div class="wfv-empty">لا توجد بيانات لهذا القسم</div>';
+    return;
+  }
+
+  body.innerHTML = list.map(f => `
+    <div class="wfv-row">
+      <div class="wfv-form">${f.form}</div>
+      <span class="wfv-type">${f.type}</span>
+      <div class="wfv-trans">${f.translation}</div>
+      ${f.when ? `<div class="wfv-when">📌 ${f.when}</div>` : ''}
+    </div>`).join('');
+}
+</script>
+</body>
+</html>

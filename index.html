@@ -689,9 +689,46 @@ function renderStatsHome(tab) {
   </div>`;
 
   const c = document.getElementById('content');
-  c.innerHTML = tabBar + '<div id="stats-tab-body"></div>';
+  const clockHTML = `<div id="live-clock-wrap" style="background:linear-gradient(135deg,#0f172a,#1e293b);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div id="live-date" style="font-size:13px;font-weight:800;color:#93c5fd;font-family:'Cairo',sans-serif;"></div>
+      <div id="live-time" style="font-size:28px;font-weight:900;color:white;font-family:'Nunito',sans-serif;letter-spacing:2px;"></div>
+    </div>
+    <div style="text-align:left;">
+      <div style="font-size:10px;color:#64748b;font-weight:700;">الجلسة القادمة</div>
+      <div id="live-next-session" style="font-size:13px;font-weight:800;color:#4ade80;font-family:'Cairo',sans-serif;"></div>
+    </div>
+  </div>`;
+  c.innerHTML = clockHTML + tabBar + '<div id="stats-tab-body"></div>';
+  _startLiveClock();
   if (tab === 'sr') _renderSRTimeline();
   else _renderQuizStats();
+}
+
+let _clockTimer = null;
+function _startLiveClock() {
+  if (_clockTimer) clearInterval(_clockTimer);
+  function _tick() {
+    const el = document.getElementById('live-time');
+    const el2 = document.getElementById('live-date');
+    const el3 = document.getElementById('live-next-session');
+    if (!el) { clearInterval(_clockTimer); return; }
+    const now = new Date();
+    const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    el2.textContent = days[now.getDay()] + ' ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    el.textContent = h + ':' + m + ':' + s;
+    const midnight = new Date(now); midnight.setHours(24,0,0,0);
+    const diff = midnight - now;
+    const hh = Math.floor(diff/3600000);
+    const mm = Math.floor((diff%3600000)/60000);
+    el3.textContent = 'بعد ' + hh + 'س ' + mm + 'د';
+  }
+  _tick();
+  _clockTimer = setInterval(_tick, 1000);
 }
 
 // ── نسبة الذاكرة (Ebbinghaus R = e^(-t/S)) ──
@@ -830,7 +867,7 @@ function _renderSRTimeline() {
   }
   if (upcoming.length > 0) {
     html += `<div style="font-size:13px;font-weight:900;color:var(--blue-dark);margin:12px 0 8px;">⏰ قادمة (${upcoming.length})</div>`;
-    upcoming.sort((a,b)=>a.m.masteredDate-b.m.masteredDate).forEach(({w,m}) => { html += _wordSRCard(w,m,'upcoming'); });
+    upcoming.sort((a,b)=>{ const ba=a.m.lastReviewDate||a.m.masteredDate, bb=b.m.lastReviewDate||b.m.masteredDate; const da=SR_INTERVALS[Math.min(a.m.reviewCount||0,SR_INTERVALS.length-1)], db=SR_INTERVALS[Math.min(b.m.reviewCount||0,SR_INTERVALS.length-1)]; return (ba+da*86400000)-(bb+db*86400000); }).forEach(({w,m}) => { html += _wordSRCard(w,m,'upcoming'); });
   }
   if (sealed.length > 0) {
     html += `<div style="font-size:13px;font-weight:900;color:var(--green-dark);margin:12px 0 8px;">🏆 ثابتة في ذاكرتك (${sealed.length})</div>`;
@@ -1898,6 +1935,12 @@ function renderDailyComplete(d) {
 // ━━━ END: SECTION 6 — DAILY 15 + SPACED REPETITION ━━━━━━━━━━━━━━━━━━━━━━━
 
 // ━━━ START: SECTION 7 — INIT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function resetProgress() {
+  if (!confirm("هيتمسح كل التقدم (المراجعات والـ SR). الكلمات هتفضل. متابع؟")) return;
+  localStorage.removeItem("ep_daily15");
+  loadMwData();
+  renderMwScreen();
+}
 function init() {
   loadMwData();
   renderMwScreen();

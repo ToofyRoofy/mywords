@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <link rel="manifest" href="manifest.json">
-<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/mywords/sw.js');</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>كلماتي</title>
@@ -95,7 +95,37 @@ body{font-family:'Cairo',sans-serif;background:#e2e8f0;direction:rtl;min-height:
 .island-action.go{background:var(--green);color:white;box-shadow:0 4px 0 var(--green-dark);}
 .island-action.go:active{transform:translateY(3px);box-shadow:0 1px 0 var(--green-dark);}
 
-/* ===== MY WORDS ===== */
+/* ===== SETS ===== */
+.sets-section{margin-top:18px;}
+.sets-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sets-section-title{font-size:14px;font-weight:900;color:var(--dark);}
+.add-set-btn{display:flex;align-items:center;gap:5px;background:var(--blue);color:white;border:none;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;}
+.set-card{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid var(--green);border-radius:16px;padding:14px;margin-bottom:10px;position:relative;}
+.set-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.set-card-name{font-size:15px;font-weight:900;color:var(--dark);}
+.set-card-count{font-size:12px;font-weight:700;color:var(--mid);}
+.set-card-del{background:var(--red-light);border:none;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--red);font-weight:800;}
+.set-card-actions{display:flex;gap:6px;}
+.set-card-btn{flex:1;padding:8px 0;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;}
+.set-card-btn.quiz{background:var(--purple);color:white;}
+.set-card-btn.learn{background:var(--blue);color:white;}
+.set-card-btn.drill{background:var(--green);color:white;}
+
+/* SET MODAL */
+.set-modal-overlay{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100%;background:rgba(0,0,0,.55);z-index:950;display:flex;align-items:flex-end;}
+.set-modal-box{background:#fff;border-radius:18px 18px 0 0;width:100%;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;}
+.set-modal-head{padding:14px 16px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.set-modal-inputs{padding:10px 16px;border-bottom:1px solid #e2e8f0;flex-shrink:0;}
+.set-modal-inp{width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:10px;font-size:14px;font-weight:700;font-family:'Cairo',sans-serif;outline:none;box-sizing:border-box;}
+.set-modal-inp:focus{border-color:var(--blue);}
+.set-word-list{overflow-y:auto;flex:1;padding:4px 16px;}
+.set-word-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;}
+.set-word-item input[type=checkbox]{width:20px;height:20px;accent-color:var(--blue);flex-shrink:0;cursor:pointer;}
+.set-word-en{font-size:15px;font-weight:800;color:var(--dark);direction:ltr;}
+.set-word-ar{font-size:12px;color:var(--blue);font-weight:600;}
+.set-modal-footer{padding:12px 16px;border-top:2px solid #e2e8f0;flex-shrink:0;}
+
+/* ===== END SETS ===== */
 .mywords-screen{padding:16px 16px 100px;}
 .mw-cats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .mw-cat-card{background:var(--white);border-radius:16px;padding:16px;box-shadow:var(--shadow);border:2px solid #e2e8f0;cursor:pointer;position:relative;transition:.2s;}
@@ -207,6 +237,64 @@ body{font-family:'Cairo',sans-serif;background:#e2e8f0;direction:rtl;min-height:
 /* FORMS MODAL ROWS */
 .form-row{background:#f8fafc;border:2px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin-bottom:8px;position:relative;}
 .form-row-del{position:absolute;top:8px;left:8px;background:transparent;border:none;font-size:14px;cursor:pointer;color:var(--red);padding:2px 6px;}
+.form-quick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.form-quick button{direction:ltr;background:#ede9fe;color:var(--purple-dark);border:2px solid #ddd6fe;border-radius:20px;padding:4px 11px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito','Cairo',sans-serif;}
+.form-quick button:active{transform:scale(.95);}
+
+/* ===== GRAMMAR TRAINERS (tenses + word-form conversion) ===== */
+.gram-hub{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.gram-card{border:2px solid;border-radius:16px;padding:14px 12px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:3px;}
+.gram-card:active{transform:scale(.97);}
+.gram-card.tense{background:linear-gradient(135deg,#ede9fe,#dbeafe);border-color:var(--purple);}
+.gram-card.conv{background:linear-gradient(135deg,#dcfce7,#fef9c3);border-color:var(--green);}
+.gram-card-ic{font-size:30px;line-height:1.1;}
+.gram-card-t{font-size:15px;font-weight:900;color:var(--dark);}
+.gram-card-en{font-size:11px;font-weight:700;color:var(--mid);direction:ltr;text-align:right;font-family:'Nunito',sans-serif;}
+.gram-card-s{font-size:11px;font-weight:700;color:var(--mid);margin-top:4px;}
+.gram-card-s b{color:var(--dark);}
+.gram-screen{padding:16px 16px 40px;display:flex;flex-direction:column;gap:14px;}
+.gs-title{font-size:20px;font-weight:900;color:var(--dark);}
+.gs-sub{font-size:12px;font-weight:600;color:var(--mid);line-height:1.7;margin-top:2px;}
+.gs-group{background:var(--white);border:2px solid #e2e8f0;border-radius:14px;padding:12px 14px;}
+.gs-group-t{font-size:12px;font-weight:800;color:var(--mid);margin-bottom:8px;}
+.gs-pills{display:flex;flex-wrap:wrap;gap:8px;}
+.gp{padding:8px 14px;border-radius:22px;border:2px solid #e2e8f0;background:var(--white);color:var(--mid);font-size:13px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;transition:.15s;}
+.gp.on{background:var(--blue-light);border-color:var(--blue);color:var(--blue-dark);}
+.gp small{font-family:'Nunito',sans-serif;font-weight:700;opacity:.75;margin-right:4px;}
+.gs-select{width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:10px;font-size:14px;font-weight:700;font-family:'Cairo',sans-serif;color:var(--dark);background:var(--white);outline:none;}
+.gs-avail{border-radius:12px;padding:10px 14px;font-size:13px;font-weight:800;text-align:center;}
+.gs-avail.ok{background:var(--green-light);color:var(--green-dark);border:2px solid var(--green);}
+.gs-avail.none{background:#fef9c3;color:#854d0e;border:2px solid var(--gold);line-height:1.8;font-weight:700;text-align:right;}
+.gs-sheet{background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.9;color:var(--dark);}
+.gs-sheet b{font-family:'Nunito',sans-serif;color:var(--blue-dark);}
+.gs-sheet .ex{font-family:'Nunito',sans-serif;direction:ltr;display:inline-block;color:var(--mid);}
+.gq-card{background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:24px 18px;text-align:center;}
+.gq-label{font-size:12px;font-weight:800;color:#94a3b8;margin-bottom:12px;}
+.gq-sentence{font-size:21px;font-weight:800;color:#fff;direction:ltr;text-align:center;font-family:'Nunito',sans-serif;line-height:1.7;}
+.gq-word{font-size:30px;font-weight:900;color:#fff;direction:ltr;font-family:'Nunito',sans-serif;}
+.gq-blank{display:inline-block;min-width:64px;border-bottom:3px solid #60a5fa;color:#60a5fa;padding:0 6px;margin:0 2px;}
+.gq-blank.ok{border-color:#4ade80;color:#4ade80;}
+.gq-blank.bad{border-color:#f87171;color:#f87171;}
+.gq-hintchip{display:inline-block;margin-top:10px;background:rgba(255,255,255,.1);border-radius:18px;padding:3px 14px;font-size:14px;font-weight:800;color:#fde68a;direction:ltr;font-family:'Nunito',sans-serif;}
+.gq-meaning{margin-top:10px;font-size:14px;font-weight:700;color:#93c5fd;}
+.gq-to{margin-top:10px;font-size:15px;font-weight:800;color:#fde68a;}
+.gq-hintbox{margin-top:12px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);border-radius:12px;padding:8px 12px;font-size:13px;font-weight:700;color:#fde68a;line-height:1.8;display:none;}
+.gq-hintbtn{background:none;border:none;color:#94a3b8;font-size:12px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;margin-top:12px;}
+.gq-opts{display:flex;flex-direction:column;gap:10px;}
+.gq-opt{padding:14px 16px;background:var(--white);border:3px solid #e2e8f0;border-radius:14px;font-size:18px;font-weight:800;cursor:pointer;transition:.15s;text-align:center;direction:ltr;font-family:'Nunito',sans-serif;color:var(--dark);}
+.gq-opt:active{transform:scale(.98);}
+.gq-opt.correct{border-color:var(--green);background:var(--green-light);color:var(--green-dark);}
+.gq-opt.wrong{border-color:var(--red);background:var(--red-light);color:var(--red-dark);}
+.gq-opt.dim{opacity:.55;}
+.gq-expl{margin-top:8px;font-size:12px;font-weight:600;line-height:1.9;color:var(--dark);text-align:right;}
+.gq-expl .en{direction:ltr;display:inline-block;font-family:'Nunito',sans-serif;font-weight:800;color:var(--blue-dark);}
+.gq-sentbox{margin-top:8px;background:#fef9c3;border:2px solid #eab308;border-radius:10px;padding:8px 12px;text-align:left;}
+.gq-bar{display:flex;align-items:center;gap:8px;margin:6px 0;}
+.gq-bar-l{flex:0 0 118px;font-size:12px;font-weight:800;color:var(--dark);}
+.gq-bar-t{flex:1;height:12px;background:#e2e8f0;border-radius:10px;overflow:hidden;}
+.gq-bar-f{height:100%;border-radius:10px;}
+.gq-bar-n{flex:0 0 52px;font-size:11px;font-weight:800;color:var(--mid);text-align:left;direction:ltr;}
+/* ===== END GRAMMAR TRAINERS ===== */
 /* ━━━ END: SECTION 1 — CSS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 </style>
 </head>
@@ -332,10 +420,24 @@ body{font-family:'Cairo',sans-serif;background:#e2e8f0;direction:rtl;min-height:
           <textarea class="mw-input mw-textarea" id="mw-displayed-sentence-trans" placeholder="المهندسون يعملون عبر تخصصات متعددة..."></textarea>
         </div>
         <hr style="border:none;border-top:2px solid #e2e8f0;margin:14px 0;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
           <div style="font-size:13px;font-weight:900;color:var(--dark);">📋 كل التصريفات</div>
           <button type="button" onclick="addFormRow()" style="background:var(--purple);color:white;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;">+ إضافة تصريف</button>
         </div>
+        <div style="font-size:11px;color:var(--mid);font-weight:600;margin-bottom:8px;line-height:1.6;">إضافة سريعة (بتشغّل تدريب الأزمنة والتحويل):</div>
+        <div class="form-quick">
+          <button type="button" onclick="addFormRow({type:'past simple'})">＋ Past (V2)</button>
+          <button type="button" onclick="addFormRow({type:'past participle'})">＋ V3</button>
+          <button type="button" onclick="addFormRow({type:'ing form'})">＋ -ing</button>
+          <button type="button" onclick="addFormRow({type:'noun'})">＋ Noun</button>
+          <button type="button" onclick="addFormRow({type:'adjective'})">＋ Adj</button>
+          <button type="button" onclick="addFormRow({type:'adverb'})">＋ Adv</button>
+          <button type="button" onclick="addFormRow({type:'verb'})">＋ Verb</button>
+        </div>
+        <datalist id="mw-pos-list">
+          <option value="verb"><option value="past simple"><option value="past participle"><option value="ing form">
+          <option value="3rd person"><option value="noun"><option value="adjective"><option value="adverb"><option value="plural">
+        </datalist>
         <div id="mw-forms-container"></div>
         <input type="hidden" id="mw-edit-id" value="">
         <button class="mw-submit-btn" onclick="saveMwWord()">💾 حفظ الكلمة</button>
@@ -484,7 +586,7 @@ function setWordMastery(wordId, m) {
 function goBack() {
   const s = mwState.currentScreen;
   if (s === 'list') return;
-  if (s === 'drill' || s === 'daily') {
+  if (s === 'drill' || s === 'daily' || s === 'gram') {
     if (!confirm('تخرج من الجلسة؟')) return;
   }
   goHome();
@@ -615,10 +717,42 @@ function renderMwScreen() {
     </div>`;
   });
 
+  // Sets section
+  const allSets = loadSets();
+  let setsHTML = '';
+  if (allSets.length > 0) {
+    setsHTML = allSets.map(set => {
+      const wids = JSON.stringify(set.wordIds).replace(/"/g,'&quot;');
+      return `<div class="set-card">
+        <div class="set-card-header">
+          <div>
+            <div class="set-card-name">📌 ${set.name}</div>
+            <div class="set-card-count">${set.wordIds.length} كلمة</div>
+          </div>
+          <button class="set-card-del" onclick="deleteSet('${set.id}')">🗑 مسح</button>
+        </div>
+        <div class="set-card-actions">
+          <button class="set-card-btn quiz" onclick="startMwQuizSet('${set.id}')">Quiz</button>
+          <button class="set-card-btn learn" onclick="startMwLearnSet('${set.id}')">Learn</button>
+          <button class="set-card-btn drill" onclick="startMwDrillSet('${set.id}')">⚡ Drill</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
   document.getElementById('content').innerHTML = `<div class="mywords-screen">
     ${dailyBanner}
     ${weakBanner}
-    <div class="mw-cats-grid">${grid}</div>
+    ${gramHubHTML()}
+    ${allWords.length === 0 ? `<div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:14px;padding:14px;margin-bottom:14px;text-align:center;font-size:13px;font-weight:700;color:var(--mid);line-height:1.8;">📭 لسه مفيش كلمات.<br>اضغط ＋ تحت لإضافة تصنيف وكلمات.</div>` : ''}
+    <div class="sets-section">
+      <div class="sets-section-header">
+        <div class="sets-section-title">📌 Sets المؤقتة</div>
+        <button class="add-set-btn" onclick="openCreateSetModal()">+ إنشاء Set</button>
+      </div>
+      ${setsHTML || `<div style="text-align:center;color:var(--mid);font-size:13px;font-weight:600;padding:10px 0;">مفيش Sets دلوقتي — اضغط "+ إنشاء Set"</div>`}
+    </div>
+    <div class="mw-cats-grid" style="margin-top:14px;">${grid}</div>
     ${allWords.length > 0 ? `<div style="margin-top:16px;">
       <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:10px;">📋 جميع الكلمات</div>
       ${allWords.map(w => renderMwWordRow(w)).join('')}
@@ -686,6 +820,8 @@ function renderStatsHome(tab) {
       ${tab==='sr'?'color:var(--blue);border-bottom:3px solid var(--blue);margin-bottom:-2px;':'color:var(--mid);'}">🔁 مراجعاتي</button>
     <button onclick="renderStatsHome('quiz')" style="flex:1;padding:12px 6px;border:none;background:none;font-size:13px;font-weight:800;font-family:'Cairo',sans-serif;cursor:pointer;
       ${tab==='quiz'?'color:var(--blue);border-bottom:3px solid var(--blue);margin-bottom:-2px;':'color:var(--mid);'}">📈 الكويز</button>
+    <button onclick="renderStatsHome('gram')" style="flex:1;padding:12px 6px;border:none;background:none;font-size:13px;font-weight:800;font-family:'Cairo',sans-serif;cursor:pointer;
+      ${tab==='gram'?'color:var(--blue);border-bottom:3px solid var(--blue);margin-bottom:-2px;':'color:var(--mid);'}">🧠 القواعد</button>
   </div>`;
 
   const c = document.getElementById('content');
@@ -702,6 +838,7 @@ function renderStatsHome(tab) {
   c.innerHTML = clockHTML + tabBar + '<div id="stats-tab-body"></div>';
   _startLiveClock();
   if (tab === 'sr') _renderSRTimeline();
+  else if (tab === 'gram') _renderGramStats();
   else _renderQuizStats();
 }
 
@@ -928,10 +1065,109 @@ function _renderQuizStats() {
   </div>`;
 }
 
-// ---- LEARN MODE ----
-function startMwLearn(catId) {
+// ---- SETS ----
+function loadSets() {
+  try { return JSON.parse(localStorage.getItem('ep_sets') || '[]'); } catch(e) { return []; }
+}
+function saveSets(sets) {
+  try { localStorage.setItem('ep_sets', JSON.stringify(sets)); } catch(e) {}
+}
+function deleteSet(setId) {
+  if (!confirm('تمسح الـ Set دي؟')) return;
+  saveSets(loadSets().filter(s => s.id !== setId));
+  renderMwScreen();
+}
+function startMwQuizSet(setId) {
+  const set = loadSets().find(s => s.id === setId);
+  if (set) startMwQuiz(null, set.wordIds);
+}
+function startMwLearnSet(setId) {
+  const set = loadSets().find(s => s.id === setId);
+  if (set) startMwLearn(null, set.wordIds);
+}
+function startMwDrillSet(setId) {
+  const set = loadSets().find(s => s.id === setId);
+  if (set) startMwDrill(null, set.wordIds);
+}
+
+let _setAllWords = [];
+function openCreateSetModal() {
   loadMwData();
-  const words = catId ? mwData.words.filter(w => w.catId === catId) : [...mwData.words];
+  _setAllWords = [...mwData.words];
+  const modal = document.createElement('div');
+  modal.id = 'set-modal';
+  modal.className = 'set-modal-overlay';
+  modal.innerHTML = `
+    <div class="set-modal-box">
+      <div class="set-modal-head">
+        <div style="font-size:16px;font-weight:900;color:var(--dark);">📌 Set جديد</div>
+        <button onclick="closeSetModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--mid);line-height:1;">✕</button>
+      </div>
+      <div class="set-modal-inputs">
+        <input id="set-name-inp" class="set-modal-inp" placeholder="اسم الـ Set..." style="margin-bottom:8px;direction:rtl;" />
+        <input id="set-search-inp" class="set-modal-inp" placeholder="🔍 ابحث بالإنجليزي أو العربي..." oninput="filterSetWords()" style="direction:ltr;" />
+        <div id="set-sel-count" style="font-size:12px;font-weight:700;color:var(--blue);margin-top:6px;text-align:center;">0 كلمة محددة</div>
+      </div>
+      <div id="set-word-list" class="set-word-list"></div>
+      <div class="set-modal-footer">
+        <button onclick="saveNewSet()" style="width:100%;padding:13px;background:var(--blue);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;">💾 حفظ الـ Set</button>
+      </div>
+    </div>`;
+  modal.addEventListener('click', e => { if (e.target === modal) closeSetModal(); });
+  document.body.appendChild(modal);
+  renderSetWordList(_setAllWords);
+}
+
+function renderSetWordList(words) {
+  const list = document.getElementById('set-word-list');
+  if (!list) return;
+  // preserve checked state
+  const checked = new Set([...document.querySelectorAll('#set-word-list input[type=checkbox]:checked')].map(c => c.dataset.id));
+  list.innerHTML = words.map(w => `
+    <label class="set-word-item">
+      <input type="checkbox" data-id="${w.id}" ${checked.has(w.id)?'checked':''} onchange="updateSetCount()" />
+      <div>
+        <div class="set-word-en">${w.word}</div>
+        <div class="set-word-ar">${w.translation}</div>
+      </div>
+    </label>`).join('');
+  updateSetCount();
+}
+
+function filterSetWords() {
+  const q = (document.getElementById('set-search-inp').value || '').toLowerCase();
+  const filtered = q ? _setAllWords.filter(w => w.word.toLowerCase().includes(q) || w.translation.includes(q)) : _setAllWords;
+  renderSetWordList(filtered);
+}
+
+function updateSetCount() {
+  const n = document.querySelectorAll('#set-word-list input[type=checkbox]:checked').length;
+  const el = document.getElementById('set-sel-count');
+  if (el) el.textContent = `${n} كلمة محددة`;
+}
+
+function saveNewSet() {
+  const name = (document.getElementById('set-name-inp').value || '').trim();
+  if (!name) { document.getElementById('set-name-inp').focus(); return; }
+  const wordIds = [...document.querySelectorAll('#set-word-list input[type=checkbox]:checked')].map(c => c.dataset.id);
+  if (wordIds.length === 0) { alert('اختار كلمة واحدة على الأقل'); return; }
+  const sets = loadSets();
+  sets.push({ id: mwId(), name, wordIds });
+  saveSets(sets);
+  closeSetModal();
+  renderMwScreen();
+}
+
+function closeSetModal() {
+  const m = document.getElementById('set-modal');
+  if (m) m.remove();
+}
+
+// ---- LEARN MODE ----
+function startMwLearn(catId, wordIds) {
+  loadMwData();
+  const words = wordIds ? mwData.words.filter(w => wordIds.includes(w.id))
+               : catId ? mwData.words.filter(w => w.catId === catId) : [...mwData.words];
   if (words.length === 0) { alert('لا يوجد كلمات في هذا التصنيف'); return; }
   mwState.currentScreen = 'learn';
   mwState.learnWords = shuffle([...words]);
@@ -982,9 +1218,10 @@ function renderMwLearnCard() {
 }
 
 // ---- QUIZ MODE ----
-function startMwQuiz(catId) {
+function startMwQuiz(catId, wordIds) {
   loadMwData();
-  const words = catId ? mwData.words.filter(w => w.catId === catId) : [...mwData.words];
+  const words = wordIds ? mwData.words.filter(w => wordIds.includes(w.id))
+               : catId ? mwData.words.filter(w => w.catId === catId) : [...mwData.words];
   if (words.length < 2) { alert('تحتاج على الأقل كلمتين لبدء الكويز'); return; }
   mwState.currentScreen = 'quiz';
   mwState.quizCatId = catId;
@@ -1091,6 +1328,7 @@ function checkMwQuiz(el, chosen, correct, wordId, mode) {
         ${mwState.quizQueue.length===0?'🏁 النتيجة':'التالي ←'}
       </button>`;
     panel.style.display = 'block';
+    if (w) setTimeout(() => speakText(w.word), 300);
   }
 }
 
@@ -1128,9 +1366,10 @@ function startMwWeakDrill() {
   _startDrillUI(`🎯 الكلمات الضعيفة • ${weakWords.length}`);
 }
 
-function startMwDrill(catId) {
+function startMwDrill(catId, wordIds) {
   loadMwData();
-  const words = catId ? mwData.words.filter(w => w.catId === catId) : [...mwData.words];
+  const words = wordIds ? mwData.words.filter(w => wordIds.includes(w.id))
+               : catId ? mwData.words.filter(w => w.catId === catId) : [...mwData.words];
   if (words.length < 1) { alert('لا يوجد كلمات للتدريب'); return; }
   mwDrill.catId = catId; mwDrill.words = shuffle([...words]);
   mwDrill.idx = 0; mwDrill.lives = 5; mwDrill.score = 0;
@@ -1213,6 +1452,7 @@ function handleDrillAction() {
     fb.className = 'drill-feedback wrong'; fb.style.display = 'block';
     fb.innerHTML = `❌ الإجابة الصح:<div class="drill-answer-reveal">${correct}</div>${ctxHTML}${wfvBtnHTML}`;
     saveWordStat(w.id, false);
+    speakText(w.word);
     if (!mwDrill.wrongWords.find(x => x.id === w.id)) mwDrill.wrongWords.push(w);
     mwDrill.lives = Math.max(0, mwDrill.lives - 1);
     if (mwDrill.lives <= 0) {
@@ -1302,6 +1542,7 @@ function addFormRow(data) {
   const fc = document.getElementById('mw-forms-container');
   const idx = fc.children.length;
   const d = data || { form:'', type:'', translation:'', when:'' };
+  const A = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   const div = document.createElement('div');
   div.className = 'form-row';
   div.innerHTML = `
@@ -1309,24 +1550,28 @@ function addFormRow(data) {
     <div class="mw-input-row" style="margin-bottom:6px;">
       <div>
         <div class="mw-label" style="font-size:11px;">الشكل</div>
-        <input class="mw-input ltr form-inp-word" style="padding:8px 10px;font-size:13px;" placeholder="disciplined" value="${d.form||''}" autocomplete="off" spellcheck="false">
+        <input class="mw-input ltr form-inp-word" style="padding:8px 10px;font-size:13px;" placeholder="disciplined" value="${A(d.form)}" autocomplete="off" autocorrect="off" spellcheck="false">
       </div>
       <div>
         <div class="mw-label" style="font-size:11px;">النوع</div>
-        <input class="mw-input ltr form-inp-type" style="padding:8px 10px;font-size:13px;" placeholder="adjective" value="${d.type||''}">
+        <input class="mw-input ltr form-inp-type" list="mw-pos-list" style="padding:8px 10px;font-size:13px;" placeholder="adjective" value="${A(d.type)}" autocomplete="off">
       </div>
     </div>
-    <div class="mw-input-row">
+    <div class="mw-input-row" style="margin-bottom:6px;">
       <div>
         <div class="mw-label" style="font-size:11px;">الترجمة</div>
-        <input class="mw-input form-inp-trans" style="padding:8px 10px;font-size:13px;" placeholder="منضبط" value="${d.translation||''}">
+        <input class="mw-input form-inp-trans" style="padding:8px 10px;font-size:13px;" placeholder="منضبط" value="${A(d.translation)}">
       </div>
       <div>
         <div class="mw-label" style="font-size:11px;">امتى نستخدمه</div>
-        <input class="mw-input form-inp-when" style="padding:8px 10px;font-size:13px;" placeholder="لوصف شخص منتظم" value="${d.when||''}">
+        <input class="mw-input form-inp-when" style="padding:8px 10px;font-size:13px;" placeholder="لوصف شخص منتظم" value="${A(d.when)}">
       </div>
-    </div>`;
+    </div>
+    <div class="mw-label" style="font-size:11px;">جملة فيها الشكل ده <span style="color:var(--mid);font-weight:600;">(بتتحول لسؤال تلقائي)</span></div>
+    <input class="mw-input ltr form-inp-sent" style="padding:8px 10px;font-size:13px;margin-bottom:6px;" placeholder="He is a very disciplined engineer." value="${A(d.sentence)}" autocomplete="off" spellcheck="false">
+    <input class="mw-input form-inp-senttr" style="padding:8px 10px;font-size:13px;" placeholder="معنى الجملة (اختياري)" value="${A(d.sentenceTrans)}">`;
   fc.appendChild(div);
+  if (!data || !data.form) setTimeout(() => div.querySelector('.form-inp-word')?.focus(), 50);
 }
 
 function collectFormRows() {
@@ -1339,7 +1584,9 @@ function collectFormRows() {
       form,
       type: row.querySelector('.form-inp-type')?.value.trim() || '',
       translation: row.querySelector('.form-inp-trans')?.value.trim() || '',
-      when: row.querySelector('.form-inp-when')?.value.trim() || ''
+      when: row.querySelector('.form-inp-when')?.value.trim() || '',
+      sentence: row.querySelector('.form-inp-sent')?.value.trim() || '',
+      sentenceTrans: row.querySelector('.form-inp-senttr')?.value.trim() || ''
     });
   });
   return forms;
@@ -1934,6 +2181,834 @@ function renderDailyComplete(d) {
 }
 // ━━━ END: SECTION 6 — DAILY 15 + SPACED REPETITION ━━━━━━━━━━━━━━━━━━━━━━━
 
+// ━━━ START: SECTION 6B — GRAMMAR TRAINERS (Tenses + Word-form conversion) ━━━
+// تدريبين بيتبنوا تلقائي من "كل التصريفات" بتاعة كل كلمة (forms) + BUILTIN_EXERCISES:
+//   ⏱ الأزمنة:  Past Simple / Present Perfect / Future
+//   🔄 التحويل: Noun ⇄ Adjective (+ Verb / Adverb) واختيار الشكل الصح في الجملة
+const GRAM_KEY = 'ep_gram_stats';
+const GRAM_PREFS_KEY = 'ep_gram_prefs';
+const CORE_POS = ['noun', 'adj', 'verb', 'adv'];
+const POS_AR  = { noun:'اسم', adj:'صفة', verb:'فعل', adv:'حال' };
+const POS_EN  = { noun:'Noun', adj:'Adjective', verb:'Verb', adv:'Adverb' };
+const POS_ABBR = { noun:'n', adj:'adj', verb:'v', adv:'adv' };
+const POS_SUFFIX = {
+  noun: '-tion · -sion · -ment · -ness · -ity · -ence / -ance · -th · -er / -or',
+  adj:  '-al · -ous · -ive · -able / -ible · -ful · -less · -ic · -ent / -ant · -y',
+  verb: '-ize · -ify · -en · -ate',
+  adv:  '-ly'
+};
+const TENSE_INFO = {
+  past:    { en:'Past Simple',     formula:'V2',              ar:'حدث بدأ وانتهى في وقت محدد في الماضي',               cues:'yesterday · last week · two days ago · in 2019' },
+  perfect: { en:'Present Perfect', formula:'have / has + V3', ar:'حدث حصل في الماضي وله علاقة بالحاضر (من غير وقت محدد)', cues:'already · so far · many times · ever · never · since · for' },
+  future:  { en:'Future Simple',   formula:'will + V1',       ar:'حدث هيحصل بعد دلوقتي',                                  cues:'tomorrow · next week · soon · tonight' }
+};
+const TENSE_FRAMES = {
+  past: [
+    { t:'Yesterday, I ___ ({v}).',               s:'I',            cue:'yesterday' },
+    { t:'She ___ ({v}) last week.',              s:'She',          cue:'last week' },
+    { t:'They ___ ({v}) two days ago.',          s:'They',         cue:'two days ago' },
+    { t:'Last year, we ___ ({v}).',              s:'We',           cue:'last year' },
+    { t:'In 2019, he ___ ({v}).',                s:'He',           cue:'in 2019' },
+    { t:'The engineer ___ ({v}) last month.',    s:'The engineer', cue:'last month', np:true }
+  ],
+  perfect: [
+    { t:'I ___ ({v}) already.',                  s:'I',            cue:'already' },
+    { t:'She ___ ({v}) already.',                s:'She',          cue:'already' },
+    { t:'They ___ ({v}) many times.',            s:'They',         cue:'many times' },
+    { t:'We ___ ({v}) so far.',                  s:'We',           cue:'so far' },
+    { t:'He ___ ({v}) several times.',           s:'He',           cue:'several times' },
+    { t:'The engineer ___ ({v}) many times.',    s:'The engineer', cue:'many times', np:true }
+  ],
+  future: [
+    { t:'Tomorrow, I ___ ({v}).',                s:'I',            cue:'tomorrow' },
+    { t:'She ___ ({v}) next week.',              s:'She',          cue:'next week' },
+    { t:'They ___ ({v}) soon.',                  s:'They',         cue:'soon' },
+    { t:'We ___ ({v}) next year.',               s:'We',           cue:'next year' },
+    { t:'He ___ ({v}) tonight.',                 s:'He',           cue:'tonight' },
+    { t:'The engineer ___ ({v}) in two days.',   s:'The engineer', cue:'in two days', np:true }
+  ]
+};
+const CONV_DIRS = {
+  'noun-adj':  { a:'noun', b:'adj',  ar:'اسم ⇄ صفة',  en:'Noun ⇄ Adj' },
+  'verb-noun': { a:'verb', b:'noun', ar:'فعل ⇄ اسم',  en:'Verb ⇄ Noun' },
+  'verb-adj':  { a:'verb', b:'adj',  ar:'فعل ⇄ صفة',  en:'Verb ⇄ Adj' },
+  'adj-adv':   { a:'adj',  b:'adv',  ar:'صفة ⇄ حال',  en:'Adj ⇄ Adv' }
+};
+const GRAM_DEFAULTS = {
+  scope: '',
+  tenses: { past:true, perfect:true, future:true },
+  dirs:   { 'noun-adj':true, 'verb-noun':false, 'verb-adj':false, 'adj-adv':false },
+  qtypes: { convert:true, ctx:true, pos:false },
+  style: 'mix', count: 20, weak: false
+};
+
+// ---- small helpers ----
+function escH(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escRe(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function normAns(s) {
+  return String(s == null ? '' : s).toLowerCase().replace(/[’‘`´]/g, "'").replace(/[.,!?;:"]/g, '').replace(/\s+/g, ' ').trim();
+}
+function uniqStr(arr) {
+  const seen = new Set(), out = [];
+  arr.forEach(x => { const k = String(x).toLowerCase(); if (x && !seen.has(k)) { seen.add(k); out.push(x); } });
+  return out;
+}
+function rnd(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function wordRe(form) { return new RegExp("(^|[^A-Za-z'’])(" + escRe(form) + ")(?![A-Za-z])", 'i'); }
+function hasWord(text, form) { return !!form && wordRe(form).test(text); }
+function blankSentence(sentence, form) {
+  const m = wordRe(form).exec(sentence);
+  if (!m) return null;
+  const start = m.index + m[1].length, end = start + m[2].length;
+  return { text: sentence.slice(0, start) + '___' + sentence.slice(end), before: sentence.slice(0, start), after: sentence.slice(end) };
+}
+function suffixShift(a, b) {
+  a = a.toLowerCase(); b = b.toLowerCase();
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  if (i < 3) return '';
+  const x = a.slice(i), y = b.slice(i);
+  if (!x && !y) return '';
+  return (x ? '-' + x : '∅') + ' → ' + (y ? '-' + y : '∅');
+}
+
+// ---- part-of-speech normalisation (type text in forms → canonical keys) ----
+function normPos(type) {
+  const out = [];
+  String(type || '').toLowerCase().split(/[\/,;&]|\band\b|\bor\b/).forEach(p0 => {
+    const p = p0.trim();
+    if (!p) return;
+    let k = '';
+    if (/past\s*participle|\bv3\b|\bpp\b|3rd form|third form/.test(p)) k = 'pp';
+    else if (/present\s*participle|gerund|\bv-?ing\b|-ing|\bing\b/.test(p)) k = 'ing';
+    else if (/past|\bv2\b|2nd form|second form|preterite/.test(p)) k = 'past';
+    else if (/3rd\s*person|third\s*person|s-form|\b3sg\b/.test(p)) k = 's';
+    else if (/plural/.test(p)) k = 'plural';
+    else if (/adj/.test(p)) k = 'adj';
+    else if (/adv/.test(p)) k = 'adv';
+    else if (/noun|^n\.?$/.test(p)) k = 'noun';
+    else if (/verb|base|infinitive|\bv1\b/.test(p)) k = 'verb';
+    if (k && out.indexOf(k) === -1) out.push(k);
+  });
+  return out;
+}
+
+// ---- word family model built from a word + its forms rows ----
+function buildFamily(w) {
+  const fam = { w, all: [], pos: { noun:[], adj:[], verb:[], adv:[], past:[], pp:[], ing:[], s:[], plural:[] } };
+  function add(poses, form, tr, sent, sentTr) {
+    form = String(form || '').trim();
+    if (!form) return;
+    poses.forEach(p => {
+      if (!fam.pos[p]) return;
+      const ex = fam.pos[p].find(e => e.form.toLowerCase() === form.toLowerCase());
+      if (ex) {
+        if (!ex.sentence && sent) { ex.sentence = sent; ex.sentenceTr = sentTr || ''; }
+        if (!ex.tr && tr) ex.tr = tr;
+        return;
+      }
+      const e = { form, pos:p, tr:tr || '', sentence:sent || '', sentenceTr:sentTr || '' };
+      fam.pos[p].push(e); fam.all.push(e);
+    });
+  }
+  const wp = normPos(w.type);
+  if (wp.length) add(wp, (wp.indexOf('verb') !== -1 ? (w.baseForm || w.word) : w.word), w.translation, '', '');
+  (w.forms || []).forEach(f => add(normPos(f.type), f.form, f.translation, f.sentence, f.sentenceTrans));
+  if (w.displayedForm && w.displayedFormSentence) {
+    const e = fam.all.find(x => x.form.toLowerCase() === String(w.displayedForm).toLowerCase());
+    if (e && !e.sentence) { e.sentence = w.displayedFormSentence; e.sentenceTr = w.displayedFormSentenceTrans || ''; }
+  }
+  String(w.examples || '').split(/\n+/).map(s => s.replace(/^[-•*\d.)\s]+/, '').trim()).filter(Boolean).forEach(line => {
+    fam.all.forEach(e => { if (!e.sentence && hasWord(line, e.form)) { e.sentence = line; } });
+  });
+  return fam;
+}
+function phraseForm(base, form) {
+  if (!form) return '';
+  if (/\s/.test(form)) return form;
+  const toks = String(base).trim().split(/\s+/);
+  return toks.length > 1 ? [form].concat(toks.slice(1)).join(' ') : form;
+}
+function verbInfo(fam) {
+  const vb = fam.pos.verb[0];
+  if (!vb) return null;
+  let past = fam.pos.past.map(e => e.form), pp = fam.pos.pp.map(e => e.form);
+  if (!past.length && pp.length === 1 && /ed$/i.test(pp[0])) past = [pp[0]];
+  if (!pp.length && past.length === 1 && /ed$/i.test(past[0])) pp = [past[0]];
+  if (!past.length && !pp.length) return null;
+  const base = vb.form;
+  return {
+    base,
+    past: past.map(f => phraseForm(base, f)),
+    pp: pp.map(f => phraseForm(base, f)),
+    ing: fam.pos.ing[0] ? phraseForm(base, fam.pos.ing[0].form) : '',
+    s: fam.pos.s[0] ? phraseForm(base, fam.pos.s[0].form) : ''
+  };
+}
+function leaksOther(fam, e, sentence) {
+  return fam.all.some(x => x !== e && x.form.toLowerCase() !== e.form.toLowerCase() && hasWord(sentence, x.form));
+}
+function famLine(fam) {
+  const rows = fam.all.filter(e => CORE_POS.indexOf(e.pos) !== -1);
+  return rows.map(e => `<span class="en">${escH(e.form)}</span> <small>(${POS_ABBR[e.pos]})</small>`).join(' · ');
+}
+
+// ---- prefs + stats storage ----
+function loadGramPrefs() {
+  const D = GRAM_DEFAULTS;
+  try {
+    const p = JSON.parse(localStorage.getItem(GRAM_PREFS_KEY) || 'null');
+    if (p && typeof p === 'object') {
+      return Object.assign({}, D, p, {
+        tenses: Object.assign({}, D.tenses, p.tenses),
+        dirs: Object.assign({}, D.dirs, p.dirs),
+        qtypes: Object.assign({}, D.qtypes, p.qtypes)
+      });
+    }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(D));
+}
+let gramPrefs = loadGramPrefs();
+function saveGramPrefs() { try { localStorage.setItem(GRAM_PREFS_KEY, JSON.stringify(gramPrefs)); } catch (e) {} }
+function loadGramStats() {
+  try {
+    const s = JSON.parse(localStorage.getItem(GRAM_KEY) || '{}');
+    s.tags = s.tags || {}; s.words = s.words || {}; s.total = s.total || { c:0, w:0 };
+    return s;
+  } catch (e) { return { tags:{}, words:{}, total:{ c:0, w:0 } }; }
+}
+function saveGramStats(s) { try { localStorage.setItem(GRAM_KEY, JSON.stringify(s)); } catch (e) {} }
+function recordGram(q, ok) {
+  const s = loadGramStats();
+  const bump = (o, k) => { o[k] = o[k] || { c:0, w:0 }; if (ok) o[k].c++; else o[k].w++; };
+  bump(s.tags, q.tag);
+  if (q.wordId) bump(s.words, q.wordId);
+  if (ok) s.total.c++; else s.total.w++;
+  saveGramStats(s);
+}
+function tagLabel(tag) {
+  if (TENSE_INFO[tag]) return TENSE_INFO[tag].en;
+  if (tag === 'forms') return 'صيغ الأفعال (V2/V3)';
+  if (tag === 'pos') return 'تحديد نوع الكلمة';
+  if (tag === 'ctx') return 'جمل: تحويل';
+  if (tag.indexOf('ctx:') === 0) return 'جمل: ' + (POS_AR[tag.slice(4)] || tag.slice(4));
+  const m = tag.match(/^(\w+)>(\w+)$/);
+  if (m) return (POS_AR[m[1]] || m[1]) + ' → ' + (POS_AR[m[2]] || m[2]);
+  return tag;
+}
+
+// ---- remove progress that belongs to words that no longer exist ----
+function purgeOrphanProgress() {
+  try {
+    const ids = new Set(mwData.words.map(w => w.id));
+    const ws = loadWordStats(); let ch = false;
+    Object.keys(ws).forEach(k => { if (!ids.has(k)) { delete ws[k]; ch = true; } });
+    if (ch) localStorage.setItem('ep_word_stats', JSON.stringify(ws));
+    const d = loadDailyData(); let dch = false;
+    if (d.mastery) Object.keys(d.mastery).forEach(k => { if (!ids.has(k)) { delete d.mastery[k]; dch = true; } });
+    if (Array.isArray(d.sessionWords) && d.sessionWords.length) {
+      const f = d.sessionWords.filter(id => ids.has(id));
+      if (f.length !== d.sessionWords.length) {
+        d.sessionWords = f.length ? f : null;
+        if (!f.length) d.sessionDone = false;
+        dch = true;
+      }
+    }
+    if (dch) saveDailyData(d);
+    const sets = loadSets(); let sch = false;
+    sets.forEach(s => {
+      const f = (s.wordIds || []).filter(id => ids.has(id));
+      if (f.length !== (s.wordIds || []).length) { s.wordIds = f; sch = true; }
+    });
+    const keep = sets.filter(s => (s.wordIds || []).length > 0);
+    if (keep.length !== sets.length) sch = true;
+    if (sch) saveSets(keep);
+    const g = loadGramStats(); let gch = false;
+    Object.keys(g.words).forEach(k => { if (!ids.has(k)) { delete g.words[k]; gch = true; } });
+    if (gch) saveGramStats(g);
+  } catch (e) {}
+}
+
+// ━━━ question generators ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function tenseExplain(tense, cue, answer) {
+  const T = TENSE_INFO[tense];
+  return `<span class="en">${T.en}</span> = <span class="en">${T.formula}</span> — ${T.ar}.` +
+    (cue ? `<br>الكلمة الدالة: <span class="en">${escH(cue)}</span>` : '') +
+    `<br>الصح: <span class="en">${escH(answer)}</span>`;
+}
+function tenseHintHTML(tense) {
+  const T = TENSE_INFO[tense];
+  return `الزمن: <span style="font-family:Nunito,sans-serif;direction:ltr;display:inline-block;">${T.en} = ${T.formula}</span><br>${T.ar}<br>كلمات دالة: <span style="font-family:Nunito,sans-serif;direction:ltr;display:inline-block;">${T.cues}</span>`;
+}
+function tenseDistractors(tense, V, s3, answers) {
+  const b = V.base, p = V.past[0] || '', pp = V.pp[0] || '';
+  const aux = s3 ? 'has' : 'have', wrongAux = s3 ? 'have' : 'has';
+  let pool = [];
+  if (tense === 'past') {
+    pool = [b, pp && 'has ' + pp, pp && 'have ' + pp, 'will ' + b, pp, 'did ' + (p || b), V.ing && 'is ' + V.ing];
+  } else if (tense === 'perfect') {
+    pool = [p, p && aux + ' ' + p, wrongAux + ' ' + pp, pp, 'will ' + b, b, V.ing && aux + ' ' + V.ing];
+  } else {
+    pool = [p, 'will ' + (p || pp), pp && 'will ' + pp, pp && aux + ' ' + pp, b, V.s, V.ing && 'will ' + V.ing];
+  }
+  const taken = new Set(answers.map(normAns));
+  const clean = uniqStr(pool.filter(Boolean)).filter(x => !taken.has(normAns(x)));
+  return shuffle(clean).slice(0, 3);
+}
+function genTenseFrameQ(w, V, tense) {
+  const fr = rnd(TENSE_FRAMES[tense]);
+  const s3 = /^(She|He|The engineer)$/.test(fr.s);
+  const base = V.base;
+  let answers;
+  if (tense === 'past') answers = V.past.slice();
+  else if (tense === 'perfect') {
+    const aux = s3 ? 'has' : 'have';
+    answers = V.pp.map(x => aux + ' ' + x);
+    if (!fr.np) V.pp.forEach(x => answers.push((s3 ? "'s " : "'ve ") + x));
+  } else {
+    const be = fr.s === 'I' ? 'am' : (s3 ? 'is' : 'are');
+    answers = ['will ' + base, "'ll " + base, be + ' going to ' + base];
+  }
+  const dis = tenseDistractors(tense, V, s3, answers);
+  const options = dis.length >= 2 ? shuffle([answers[0]].concat(dis)) : null;
+  return {
+    kind:'tense', tag:tense, wordId:w.id, sentence: fr.t.replace('{v}', base), meaning: w.translation,
+    answers, answer: answers[0], options, hint: tenseHintHTML(tense), explain: tenseExplain(tense, fr.cue, answers[0]),
+    key: w.id + '|' + tense + '|' + fr.t
+  };
+}
+function genTenseCtxQs(w, fam, V, en) {
+  const out = [];
+  if (/\s/.test(V.base)) return out;
+  const raw = uniqStr([V.base].concat(fam.pos.past.map(e => e.form), fam.pos.pp.map(e => e.form), fam.pos.ing.map(e => e.form), fam.pos.s.map(e => e.form)));
+  if (raw.length < 3) return out;
+  const rows = []
+    .concat(fam.pos.past.map(e => [e, 'past']), fam.pos.pp.map(e => [e, 'pp']), fam.pos.verb.map(e => [e, 'base']));
+  rows.forEach(([e, kind]) => {
+    if (!e.sentence) return;
+    const bl = blankSentence(e.sentence, e.form);
+    if (!bl || leaksOther(fam, e, e.sentence)) return;
+    let tag = null;
+    if (/(\bhas|\bhave|'ve|'s)\s+(\w+\s+)?$/i.test(bl.before)) tag = 'perfect';
+    else if (/\bhad\s+(\w+\s+)?$/i.test(bl.before)) tag = 'forms';
+    else if (/(\bwill|'ll|\bwon't|\bshall)\s+(\w+\s+)?$/i.test(bl.before)) tag = 'future';
+    else if (kind === 'past') tag = 'past';
+    else if (kind === 'pp') tag = 'forms';
+    if (!tag) return;
+    if (tag === 'forms' ? !(en.past || en.perfect) : !en[tag]) return;
+    const answers = [e.form];
+    const dis = shuffle(raw.filter(x => x.toLowerCase() !== e.form.toLowerCase())).slice(0, 3);
+    if (dis.length < 2) return;
+    out.push({
+      kind:'tense', tag, wordId:w.id, sentence: bl.text, hintChip: V.base, meaning: e.sentenceTr || '',
+      answers, answer: e.form, options: shuffle([e.form].concat(dis)), fullSentence: e.sentence,
+      hint: tag === 'forms' ? 'اختار الصيغة (V1 / V2 / V3 / -ing) اللي تناسب الجملة' : tenseHintHTML(tag),
+      explain: (TENSE_INFO[tag] ? tenseExplain(tag, '', e.form) : `الصح: <span class="en">${escH(e.form)}</span>`) +
+        `<br>الصيغ: <span class="en">${escH(raw.join(' · '))}</span>`,
+      key: 'tctx|' + w.id + '|' + e.sentence
+    });
+  });
+  return out;
+}
+function exToQ(ex) {
+  if (!ex || !ex.sentence || ex.answer == null) return null;
+  const answers = (Array.isArray(ex.answer) ? ex.answer : [ex.answer]).map(String);
+  const dis = (ex.distractors || ex.options || []).map(String).filter(o => !answers.some(a => normAns(a) === normAns(o)));
+  const options = dis.length >= 2 ? shuffle(uniqStr([answers[0]].concat(shuffle(dis.slice()))).slice(0, 4)) : null;
+  const isTense = ex.kind === 'tense';
+  const tag = isTense ? (TENSE_INFO[ex.tense] ? ex.tense : 'forms') : (ex.pos ? 'ctx:' + ex.pos : 'ctx');
+  return {
+    kind: isTense ? 'tense' : 'convert', tag, wordId: ex.wordId || null,
+    sentence: ex.sentence, meaning: ex.tr || '', answers, answer: answers[0], options,
+    fullSentence: '', hint: isTense && TENSE_INFO[ex.tense] ? tenseHintHTML(ex.tense) : (ex.hint || ''),
+    explain: (ex.explain ? escH(ex.explain) + '<br>' : '') + `الصح: <span class="en">${escH(answers[0])}</span>`,
+    key: 'ex|' + (ex.id || ex.sentence), catId: ex.catId
+  };
+}
+function dedupeQs(arr) {
+  const seen = new Set(), out = [];
+  arr.forEach(q => { if (q && !seen.has(q.key)) { seen.add(q.key); out.push(q); } });
+  return out;
+}
+function genTensePool(prefs) {
+  loadMwData();
+  const out = [], en = prefs.tenses;
+  const words = prefs.scope ? mwData.words.filter(w => w.catId === prefs.scope) : mwData.words;
+  words.forEach(w => {
+    const fam = buildFamily(w), V = verbInfo(fam);
+    if (!V) return;
+    ['past', 'perfect', 'future'].forEach(t => {
+      if (!en[t]) return;
+      if (t === 'past' && !V.past.length) return;
+      if (t === 'perfect' && !V.pp.length) return;
+      for (let i = 0; i < 2; i++) out.push(genTenseFrameQ(w, V, t));
+    });
+    genTenseCtxQs(w, fam, V, en).forEach(q => out.push(q));
+  });
+  (typeof BUILTIN_EXERCISES !== 'undefined' ? BUILTIN_EXERCISES : []).forEach(ex => {
+    if (ex.kind !== 'tense') return;
+    if (prefs.scope && ex.catId !== prefs.scope) return;
+    const q = exToQ(ex);
+    if (!q) return;
+    if (q.tag === 'forms' ? !(en.past || en.perfect) : !en[q.tag]) return;
+    out.push(q);
+  });
+  return dedupeQs(out);
+}
+
+function convOptions(fam, tgtPos, answers, srcForm, famsPool) {
+  const taken = new Set(answers.concat(srcForm ? [srcForm] : []).map(x => x.toLowerCase()));
+  const same = [], others = [];
+  fam.all.forEach(e => {
+    if (CORE_POS.indexOf(e.pos) !== -1 && e.pos !== tgtPos && !taken.has(e.form.toLowerCase())) same.push(e.form);
+  });
+  famsPool.forEach(f2 => {
+    if (f2 === fam) return;
+    f2.pos[tgtPos].forEach(e => { if (!taken.has(e.form.toLowerCase())) others.push(e.form); });
+  });
+  const opts = [answers[0]];
+  uniqStr(shuffle(same.slice())).slice(0, 2).forEach(x => opts.push(x));
+  uniqStr(shuffle(others.slice())).forEach(x => { if (opts.length < 4 && opts.map(o => o.toLowerCase()).indexOf(x.toLowerCase()) === -1) opts.push(x); });
+  uniqStr(shuffle(same.slice())).forEach(x => { if (opts.length < 4 && opts.map(o => o.toLowerCase()).indexOf(x.toLowerCase()) === -1) opts.push(x); });
+  return opts.length >= 3 ? shuffle(opts) : null;
+}
+function posHintHTML(pos) {
+  return `${POS_AR[pos]} (<span style="font-family:Nunito,sans-serif;">${POS_EN[pos]}</span>) — الأواخر الشائعة:<br><span style="font-family:Nunito,sans-serif;direction:ltr;display:inline-block;">${POS_SUFFIX[pos]}</span>`;
+}
+function mkConvertQ(w, fam, srcE, src, tgt, famsPool) {
+  const tgtEs = fam.pos[tgt].filter(e => e.form.toLowerCase() !== srcE.form.toLowerCase());
+  if (!tgtEs.length) return null;
+  const answers = tgtEs.map(e => e.form);
+  const shift = suffixShift(srcE.form, answers[0]);
+  return {
+    kind:'convert', tag: src + '>' + tgt, wordId:w.id, big: srcE.form, srcPos: src, tgtPos: tgt, meaning: srcE.tr || '',
+    answers, answer: answers[0], options: convOptions(fam, tgt, answers, srcE.form, famsPool),
+    hint: posHintHTML(tgt),
+    explain: `<span class="en">${escH(srcE.form)}</span> <small>(${POS_ABBR[src]})</small> → <span class="en">${escH(answers[0])}</span> <small>(${POS_ABBR[tgt]})</small>` +
+      (shift ? `<br>التغيير: <span class="en">${shift}</span>` : '') + `<br>العائلة: ${famLine(fam)}`,
+    key: w.id + '|' + srcE.form + '|' + tgt
+  };
+}
+function mkCtxQ(w, fam, e, famsPool) {
+  if (!e.sentence) return null;
+  const bl = blankSentence(e.sentence, e.form);
+  if (!bl || leaksOther(fam, e, e.sentence)) return null;
+  const cand = [];
+  ['verb', 'adj', 'noun', 'adv'].forEach(p => { if (p !== e.pos) fam.pos[p].forEach(x => { if (x.form.toLowerCase() !== e.form.toLowerCase() && !hasWord(e.sentence, x.form)) cand.push(x.form); }); });
+  const hintChip = cand[0] || '';
+  return {
+    kind:'convert', tag: 'ctx:' + e.pos, wordId:w.id, sentence: bl.text, hintChip, meaning: e.sentenceTr || '',
+    answers:[e.form], answer: e.form, options: convOptions(fam, e.pos, [e.form], '', famsPool), fullSentence: e.sentence,
+    hint: posHintHTML(e.pos),
+    explain: `الفراغ محتاج <b>${POS_AR[e.pos]}</b> (<span class="en">${POS_EN[e.pos]}</span>): <span class="en">${escH(e.form)}</span><br>العائلة: ${famLine(fam)}`,
+    key: 'ctx|' + w.id + '|' + e.sentence
+  };
+}
+function mkPosQ(w, fam, e) {
+  if (CORE_POS.indexOf(e.pos) === -1) return null;
+  const clash = fam.all.some(x => x !== e && x.form.toLowerCase() === e.form.toLowerCase() && CORE_POS.indexOf(x.pos) !== -1);
+  if (clash) return null;
+  const labels = CORE_POS.map(p => POS_EN[p]);
+  return {
+    kind:'convert', tag:'pos', wordId:w.id, big: e.form, sentence: e.sentence || '', hl: e.sentence ? e.form : '', meaning: e.tr || '',
+    answers:[POS_EN[e.pos]], answer: POS_EN[e.pos], options: labels, fixed:true, noType:true,
+    hint: 'فكّر: الكلمة بتسمّي حاجة (اسم)؟ بتوصف حاجة (صفة)؟ بتعبّر عن فعل؟ ولا بتوصف الفعل (حال)؟',
+    explain: `<span class="en">${escH(e.form)}</span> = <b>${POS_AR[e.pos]}</b> (<span class="en">${POS_EN[e.pos]}</span>)<br>العائلة: ${famLine(fam)}`,
+    key: 'pos|' + w.id + '|' + e.form + '|' + (e.sentence || '')
+  };
+}
+function genConvPool(prefs) {
+  loadMwData();
+  const out = [];
+  const all = mwData.words.map(w => ({ w, fam: buildFamily(w) }));
+  const famsPool = all.map(x => x.fam);
+  const scoped = prefs.scope ? all.filter(x => x.w.catId === prefs.scope) : all;
+  const dirs = Object.keys(CONV_DIRS).filter(k => prefs.dirs[k]);
+  const posOn = new Set();
+  dirs.forEach(k => { posOn.add(CONV_DIRS[k].a); posOn.add(CONV_DIRS[k].b); });
+  scoped.forEach(({ w, fam }) => {
+    if (prefs.qtypes.convert) {
+      dirs.forEach(k => {
+        const D = CONV_DIRS[k];
+        [[D.a, D.b], [D.b, D.a]].forEach(([src, tgt]) => {
+          fam.pos[src].forEach(srcE => { const q = mkConvertQ(w, fam, srcE, src, tgt, famsPool); if (q) out.push(q); });
+        });
+      });
+    }
+    if (prefs.qtypes.ctx) {
+      fam.all.forEach(e => { if (posOn.has(e.pos)) { const q = mkCtxQ(w, fam, e, famsPool); if (q) out.push(q); } });
+    }
+    if (prefs.qtypes.pos) {
+      fam.all.forEach(e => { if (posOn.has(e.pos)) { const q = mkPosQ(w, fam, e); if (q) out.push(q); } });
+    }
+  });
+  if (prefs.qtypes.ctx) {
+    (typeof BUILTIN_EXERCISES !== 'undefined' ? BUILTIN_EXERCISES : []).forEach(ex => {
+      if (ex.kind !== 'convert') return;
+      if (prefs.scope && ex.catId !== prefs.scope) return;
+      const q = exToQ(ex); if (q) out.push(q);
+    });
+  }
+  return dedupeQs(out);
+}
+
+// ━━━ selection ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function pickQuestions(pool, count, weak) {
+  const stats = loadGramStats().words;
+  pool.forEach(q => {
+    const s = q.wordId && stats[q.wordId];
+    const acc = s && (s.c + s.w) ? s.c / (s.c + s.w) : 0.5;
+    q._sc = (weak ? acc : 0) + Math.random() * (weak ? 0.35 : 1);
+  });
+  const sorted = pool.slice().sort((a, b) => a._sc - b._sc);
+  const distinct = new Set(pool.map(q => q.wordId || q.key)).size || 1;
+  const cap = Math.max(2, Math.ceil(count / distinct));
+  const per = {}, picked = [], rest = [];
+  sorted.forEach(q => {
+    const k = q.wordId || q.key;
+    if (picked.length < count && (per[k] || 0) < cap) { picked.push(q); per[k] = (per[k] || 0) + 1; }
+    else rest.push(q);
+  });
+  for (let i = 0; picked.length < count && i < rest.length; i++) picked.push(rest[i]);
+  return shuffle(picked);
+}
+function assignMode(q, style) {
+  const canMC = !!(q.options && q.options.length >= 3);
+  if (q.noType) q.mode = 'mc';
+  else if (style === 'mc') q.mode = canMC ? 'mc' : 'type';
+  else if (style === 'type') q.mode = 'type';
+  else q.mode = (canMC && Math.random() < 0.5) ? 'mc' : 'type';
+}
+
+// ━━━ home cards ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function gramHubHTML() {
+  let verbs = 0, fams = 0;
+  try {
+    mwData.words.forEach(w => {
+      const f = buildFamily(w);
+      if (verbInfo(f)) verbs++;
+      if (CORE_POS.filter(p => f.pos[p].length).length >= 2) fams++;
+    });
+  } catch (e) {}
+  return `<div class="gram-hub">
+    <div class="gram-card tense" onclick="openGramSetup('tense')">
+      <div class="gram-card-ic">⏱</div>
+      <div class="gram-card-t">تدريب الأزمنة</div>
+      <div class="gram-card-en">Past · Perfect · Future</div>
+      <div class="gram-card-s"><b>${verbs}</b> فعل جاهز</div>
+    </div>
+    <div class="gram-card conv" onclick="openGramSetup('conv')">
+      <div class="gram-card-ic">🔄</div>
+      <div class="gram-card-t">تدريب التحويل</div>
+      <div class="gram-card-en">Noun ⇄ Adjective</div>
+      <div class="gram-card-s"><b>${fams}</b> عائلة كلمات</div>
+    </div>
+  </div>`;
+}
+
+// ━━━ setup screen ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function _gramChrome() {
+  document.getElementById('combo-wrap').classList.add('hidden');
+  document.getElementById('mw-fab').classList.remove('show');
+}
+function openGramSetup(kind) {
+  loadMwData();
+  mwState.currentScreen = 'gram-setup';
+  mwState.gramKind = kind;
+  _gramChrome();
+  document.getElementById('bottom-nav').classList.remove('hidden');
+  renderGramSetup();
+  window.scrollTo(0, 0);
+}
+function gramPill(on, onclick, html) { return `<button class="gp${on ? ' on' : ''}" onclick="${onclick}">${html}</button>`; }
+function renderGramSetup() {
+  const kind = mwState.gramKind, P = gramPrefs;
+  const isT = kind === 'tense';
+  document.getElementById('header-title').textContent = isT ? '⏱ تدريب الأزمنة' : '🔄 تدريب التحويل';
+  let pool = [];
+  try { pool = isT ? genTensePool(P) : genConvPool(P); } catch (e) { console.error(e); }
+  const nWords = new Set(pool.map(q => q.wordId).filter(Boolean)).size;
+  const cats = mwData.categories;
+  const scopeSel = `<select class="gs-select" onchange="gramSet('scope', this.value)">
+    <option value="">كل الكلمات</option>
+    ${cats.map(c => `<option value="${escH(c.id)}"${P.scope === c.id ? ' selected' : ''}>${escH(c.name)}</option>`).join('')}
+  </select>`;
+  const avail = pool.length
+    ? `<div class="gs-avail ok">✅ متاح ${pool.length} سؤال${nWords ? ` من ${nWords} كلمة` : ''}</div>`
+    : `<div class="gs-avail none">${isT
+        ? 'لسه مفيش أسئلة جاهزة.<br>التدريب بيحتاج أفعال ليها <b>Past (V2)</b> و<b>V3</b> في "كل التصريفات" (من ✏️ تعديل الكلمة ← إضافة سريعة).'
+        : 'لسه مفيش أسئلة جاهزة.<br>التدريب بيحتاج كلمات ليها تصريفات بأنواع مختلفة (<b>noun / adjective / verb / adverb</b>) في "كل التصريفات".'}</div>`;
+  let groups = '';
+  if (isT) {
+    groups += `<div class="gs-group"><div class="gs-group-t">الأزمنة</div><div class="gs-pills">
+      ${Object.keys(TENSE_INFO).map(t => gramPill(P.tenses[t], `gramToggle('tenses','${t}')`, `${TENSE_INFO[t].en}`)).join('')}
+    </div></div>`;
+  } else {
+    groups += `<div class="gs-group"><div class="gs-group-t">اتجاه التحويل</div><div class="gs-pills">
+      ${Object.keys(CONV_DIRS).map(k => gramPill(P.dirs[k], `gramToggle('dirs','${k}')`, CONV_DIRS[k].ar)).join('')}
+    </div></div>
+    <div class="gs-group"><div class="gs-group-t">نوع الأسئلة</div><div class="gs-pills">
+      ${gramPill(P.qtypes.convert, `gramToggle('qtypes','convert')`, '✍️ تحويل كلمة')}
+      ${gramPill(P.qtypes.ctx, `gramToggle('qtypes','ctx')`, '📝 كمّل الجملة')}
+      ${gramPill(P.qtypes.pos, `gramToggle('qtypes','pos')`, '🏷 نوع الكلمة')}
+    </div></div>`;
+  }
+  groups += `<div class="gs-group"><div class="gs-group-t">طريقة الإجابة</div><div class="gs-pills">
+    ${gramPill(P.style === 'mc', `gramSet('style','mc')`, 'اختيار')}
+    ${gramPill(P.style === 'type', `gramSet('style','type')`, 'كتابة')}
+    ${gramPill(P.style === 'mix', `gramSet('style','mix')`, 'مختلط')}
+  </div></div>
+  <div class="gs-group"><div class="gs-group-t">عدد الأسئلة</div><div class="gs-pills">
+    ${[10, 20, 30].map(n => gramPill(P.count === n, `gramSet('count',${n})`, n)).join('')}
+    ${gramPill(P.weak, `gramToggle('', 'weak')`, '🎯 الأضعف أولاً')}
+  </div></div>`;
+  const sheet = isT
+    ? `<details class="gs-group"><summary style="font-size:13px;font-weight:800;color:var(--dark);cursor:pointer;">📖 ملخص الأزمنة</summary><div class="gs-sheet" style="margin-top:8px;">
+        ${Object.keys(TENSE_INFO).map(t => `<b>${TENSE_INFO[t].en}</b> = <b>${TENSE_INFO[t].formula}</b><br>${TENSE_INFO[t].ar}<br><span class="ex">${TENSE_INFO[t].cues}</span><br>`).join('<hr style="border:none;border-top:1px dashed #cbd5e1;margin:6px 0;">')}
+      </div></details>`
+    : `<details class="gs-group"><summary style="font-size:13px;font-weight:800;color:var(--dark);cursor:pointer;">📖 ملخص اللواحق الشائعة</summary><div class="gs-sheet" style="margin-top:8px;">
+        ${CORE_POS.map(p => `<b>${POS_AR[p]} (${POS_EN[p]})</b><br><span class="ex">${POS_SUFFIX[p]}</span>`).join('<hr style="border:none;border-top:1px dashed #cbd5e1;margin:6px 0;">')}
+        <br><span style="color:var(--mid);">قاعدة عامة مش مضمونة 100% — الكلمات في منهجك هي المرجع.</span>
+      </div></details>`;
+  document.getElementById('content').innerHTML = `<div class="gram-screen">
+    <div><div class="gs-title">${isT ? '⏱ تدريب الأزمنة' : '🔄 تدريب التحويل'}</div>
+    <div class="gs-sub">${isT ? 'اختار أو اكتب الصيغة الصح للفعل حسب الكلمة الدالة على الزمن.' : 'حوّل الكلمة بين الاسم والصفة (وغيرهم) واختار الشكل الصح في الجملة.'}</div></div>
+    ${avail}
+    <div class="gs-group"><div class="gs-group-t">النطاق</div>${scopeSel}</div>
+    ${groups}
+    ${sheet}
+    <button class="drill-check-btn ${pool.length ? 'ready' : 'disabled'}" ${pool.length ? `onclick="startGramSession('${kind}')"` : ''}>▶️ ابدأ التدريب</button>
+  </div>`;
+}
+function _gramKeepScroll(fn) {
+  const y = window.scrollY, c = document.getElementById('content').scrollTop;
+  fn();
+  window.scrollTo(0, y); document.getElementById('content').scrollTop = c;
+}
+function gramSet(key, val) {
+  gramPrefs[key] = val; saveGramPrefs();
+  _gramKeepScroll(renderGramSetup);
+}
+function gramToggle(group, key) {
+  if (!group) { gramPrefs[key] = !gramPrefs[key]; }
+  else {
+    const g = gramPrefs[group];
+    if (g[key] && Object.keys(g).filter(k => g[k]).length <= 1) return;
+    g[key] = !g[key];
+  }
+  saveGramPrefs();
+  _gramKeepScroll(renderGramSetup);
+}
+
+// ━━━ session ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let gt = null;
+function startGramSession(kind) {
+  const P = gramPrefs;
+  let pool = [];
+  try { pool = kind === 'tense' ? genTensePool(P) : genConvPool(P); } catch (e) { console.error(e); }
+  if (!pool.length) { alert('مفيش أسئلة متاحة بالإعدادات دي'); return; }
+  const qs = pickQuestions(pool, P.count, P.weak);
+  qs.forEach(q => assignMode(q, P.style));
+  gt = { kind, queue: qs, idx: 0, correct: 0, wrongQs: [], answered: false, byTag: {}, review: false, total: qs.length };
+  _gramEnter();
+  renderGramQ();
+}
+function _gramEnter() {
+  mwState.currentScreen = 'gram';
+  document.getElementById('combo-wrap').classList.add('hidden');
+  document.getElementById('bottom-nav').classList.add('hidden');
+  document.getElementById('mw-fab').classList.remove('show');
+  window.scrollTo(0, 0);
+}
+function sentToHTML(q) {
+  let s = escH(q.sentence);
+  if (q.hl) {
+    const re = new RegExp("(^|[^A-Za-z'’])(" + escRe(escH(q.hl)) + ")(?![A-Za-z])", 'i');
+    s = s.replace(re, (m, a, b) => a + '<span class="gq-blank ok" style="min-width:0;">' + b + '</span>');
+    return s;
+  }
+  return s.replace(/_{3,}/, '<span class="gq-blank" id="gq-blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+}
+function qLabel(q) {
+  if (q.tag === 'pos') return 'إيه نوع الكلمة دي؟';
+  const v = q.mode === 'mc' ? 'اختار' : 'اكتب';
+  if (q.kind === 'tense') return v + ' الصيغة الصح';
+  if (q.tag.indexOf('ctx') === 0) return v + ' الشكل الصح للفراغ';
+  return q.mode === 'mc' ? 'اختار التحويل الصح' : 'اكتب التحويل الصح';
+}
+function renderGramQ() {
+  if (gt.idx >= gt.queue.length) { renderGramResults(); return; }
+  const q = gt.queue[gt.idx];
+  gt.answered = false;
+  const pct = Math.round((gt.idx / gt.queue.length) * 100);
+  document.getElementById('header-title').textContent = (gt.kind === 'tense' ? '⏱ الأزمنة' : '🔄 التحويل') + ` • ${gt.idx + 1}/${gt.queue.length}`;
+  q.shown = q.mode === 'mc' ? (q.fixed ? q.options.slice() : shuffle(q.options.slice())) : null;
+  let card = '';
+  if (q.sentence) card += `<div class="gq-sentence">${sentToHTML(q)}</div>`;
+  else card += `<div class="gq-word">${escH(q.big)}</div>`;
+  if (q.hintChip) card += `<div class="gq-hintchip">( ${escH(q.hintChip)} )</div>`;
+  if (q.srcPos) card += `<div class="gq-to">${POS_AR[q.srcPos]} ← حوّلها إلى <b>${POS_AR[q.tgtPos]}</b> <span style="font-family:Nunito,sans-serif;">(${POS_EN[q.tgtPos]})</span></div>`;
+  if (q.meaning) card += `<div class="gq-meaning">${escH(q.meaning)}</div>`;
+  if (q.hint) card += `<button class="gq-hintbtn" id="gq-hintbtn" onclick="gramHint()">💡 تلميح</button><div class="gq-hintbox" id="gq-hintbox">${q.hint}</div>`;
+  let answerUI;
+  if (q.mode === 'mc') {
+    answerUI = `<div class="gq-opts">${q.shown.map((o, i) => `<button class="gq-opt" data-i="${i}" onclick="gramPick(${i})">${escH(o)}</button>`).join('')}</div>`;
+  } else {
+    answerUI = `<input id="gq-inp" class="drill-input" style="font-size:19px;padding:15px;" placeholder="اكتب الإجابة..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+        oninput="gramTyped()" onkeydown="if(event.key==='Enter')gramAction()">
+      <button id="gq-btn" class="drill-check-btn disabled" onclick="gramAction()">تحقق</button>`;
+  }
+  document.getElementById('content').innerHTML = `<div class="gram-screen">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;background:#e2e8f0;border-radius:10px;height:8px;overflow:hidden;"><div style="height:100%;background:var(--purple);border-radius:10px;width:${pct}%;transition:width .4s;"></div></div>
+      <div class="drill-score-chip" id="gq-score">✅ ${gt.correct}</div>
+    </div>
+    <div class="gq-card"><div class="gq-label">${qLabel(q)}</div>${card}</div>
+    ${answerUI}
+    <div id="gq-fb" class="drill-feedback"></div>
+    <div id="gq-next"></div>
+  </div>`;
+  if (q.mode === 'type') setTimeout(() => document.getElementById('gq-inp')?.focus(), 120);
+}
+function gramHint() {
+  const b = document.getElementById('gq-hintbox'); if (b) b.style.display = 'block';
+  const h = document.getElementById('gq-hintbtn'); if (h) h.style.display = 'none';
+}
+function gramTyped() {
+  const inp = document.getElementById('gq-inp'), btn = document.getElementById('gq-btn');
+  if (!inp || !btn || gt.answered) return;
+  btn.className = 'drill-check-btn ' + (inp.value.trim() ? 'ready' : 'disabled');
+}
+function gramPick(i) {
+  if (gt.answered) return;
+  const q = gt.queue[gt.idx];
+  gramJudge(q.shown[i], i);
+}
+function gramAction() {
+  if (gt.answered) { gramNext(); return; }
+  const inp = document.getElementById('gq-inp');
+  if (!inp || !inp.value.trim()) return;
+  gramJudge(inp.value, -1);
+}
+function gramNext() { gt.idx++; renderGramQ(); }
+function _gramPlain(q) {
+  if (!q.sentence) return q.answer;
+  return q.sentence.replace(/_{3,}/, q.answer).replace(/\s*\([^)]*\)/g, '').replace(/\s+([.,!?])/g, '$1');
+}
+function gramSpeak() {
+  const q = gt && gt.queue[gt.idx];
+  if (q) speakText(_gramPlain(q));
+}
+function gramJudge(val, optIdx) {
+  const q = gt.queue[gt.idx];
+  const ok = q.answers.some(a => normAns(a) === normAns(val));
+  gt.answered = true;
+  recordGram(q, ok);
+  const t = gt.byTag[q.tag] = gt.byTag[q.tag] || { c:0, w:0 };
+  if (ok) { gt.correct++; t.c++; }
+  else { t.w++; if (gt.wrongQs.indexOf(q) === -1) gt.wrongQs.push(q); }
+  const sc = document.getElementById('gq-score'); if (sc) sc.textContent = '✅ ' + gt.correct;
+  const blank = document.getElementById('gq-blank');
+  if (blank) { blank.textContent = q.answer; blank.className = 'gq-blank ' + (ok ? 'ok' : 'bad'); }
+  if (q.mode === 'mc') {
+    document.querySelectorAll('.gq-opt').forEach((b, i) => {
+      b.onclick = null;
+      const isAns = q.answers.some(a => normAns(a) === normAns(q.shown[i]));
+      if (isAns) b.classList.add('correct');
+      else if (i === optIdx) b.classList.add('wrong');
+      else b.classList.add('dim');
+    });
+  } else {
+    const inp = document.getElementById('gq-inp');
+    if (inp) { inp.className = 'drill-input ' + (ok ? 'correct' : 'wrong'); inp.readOnly = true; }
+  }
+  const fb = document.getElementById('gq-fb');
+  const w = q.wordId && mwData.words.find(x => x.id === q.wordId);
+  const famBtn = (w && w.forms && w.forms.length) ? `<div style="text-align:center;margin-top:10px;"><button class="wfv-btn" onclick="openWfv('${w.id}')">🌿 WFV — Word Family</button></div>` : '';
+  const full = q.fullSentence
+    ? `<div class="gq-sentbox"><div style="font-size:10px;font-weight:800;color:#92400e;margin-bottom:3px;text-align:right;">📖 الجملة</div><div style="font-size:13px;direction:ltr;font-family:'Nunito',sans-serif;color:#78350f;font-style:italic;">&ldquo;${escH(q.fullSentence)}&rdquo;</div></div>` : '';
+  fb.className = 'drill-feedback ' + (ok ? 'correct' : 'wrong');
+  fb.style.display = 'block';
+  fb.innerHTML = `${ok ? '✅ صح!' : '❌ الإجابة الصح:'}<div class="drill-answer-reveal">${escH(q.answer)}</div>
+    <div class="gq-expl">${q.explain || ''}</div>${full}
+    <div style="text-align:center;margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"><button class="wfv-btn" onclick="gramSpeak()">🔊 استمع</button></div>${famBtn}`;
+  const last = gt.idx + 1 >= gt.queue.length;
+  document.getElementById('gq-next').innerHTML = `<button class="drill-check-btn next" onclick="gramNext()">${last ? '🏁 النتيجة' : 'التالي →'}</button>`;
+  const btn = document.getElementById('gq-btn'); if (btn) btn.style.display = 'none';
+  setTimeout(() => document.getElementById('gq-next')?.scrollIntoView({ block:'nearest', behavior:'smooth' }), 80);
+}
+function gramBarsHTML(byTag) {
+  const keys = Object.keys(byTag);
+  if (!keys.length) return '';
+  return keys.map(k => {
+    const t = byTag[k], n = t.c + t.w, p = n ? Math.round((t.c / n) * 100) : 0;
+    const col = p >= 80 ? 'var(--green)' : p >= 50 ? 'var(--gold)' : 'var(--red)';
+    return `<div class="gq-bar"><div class="gq-bar-l">${escH(tagLabel(k))}</div><div class="gq-bar-t"><div class="gq-bar-f" style="width:${p}%;background:${col};"></div></div><div class="gq-bar-n">${t.c}/${n}</div></div>`;
+  }).join('');
+}
+function renderGramResults() {
+  mwState.currentScreen = 'gram-results';
+  const total = gt.queue.length, pct = total ? Math.round((gt.correct / total) * 100) : 0;
+  document.getElementById('header-title').textContent = gt.review ? 'نتيجة المراجعة' : 'نتيجة التدريب';
+  const wrongN = gt.wrongQs.length;
+  document.getElementById('content').innerHTML = `<div class="results" style="padding-top:36px;">
+    <span class="res-icon">${pct >= 80 ? '🎉' : pct >= 60 ? '😊' : '💪'}</span>
+    <div class="res-title">${pct >= 80 ? 'ممتاز!' : pct >= 60 ? 'كويس!' : 'استمر!'}</div>
+    <div class="res-score" style="color:var(--purple);">${gt.correct} / ${total}</div>
+    <div class="res-xp">${pct}%</div>
+    <div style="text-align:right;margin:10px 0 6px;">${gramBarsHTML(gt.byTag)}</div>
+    ${wrongN ? `<button class="res-btn" style="background:#f97316;box-shadow:0 4px 0 #ea580c;" onclick="startGramReview()">🔁 راجع الغلط (${wrongN})</button>` : ''}
+    <button class="res-btn retry" style="background:var(--purple);box-shadow:0 4px 0 var(--purple-dark);" onclick="startGramSession('${gt.kind}')">🔄 تدريب جديد</button>
+    <button class="res-btn" style="background:#e2e8f0;color:var(--dark);box-shadow:0 4px 0 #cbd5e1;" onclick="openGramSetup('${gt.kind}')">⚙️ الإعدادات</button>
+    <button class="res-btn home" onclick="goHome()">🏠 كلماتي</button>
+  </div>`;
+}
+function startGramReview() {
+  const qs = shuffle(gt.wrongQs.slice());
+  qs.forEach(q => assignMode(q, gramPrefs.style));
+  gt = { kind: gt.kind, queue: qs, idx: 0, correct: 0, wrongQs: [], answered: false, byTag: {}, review: true, total: qs.length };
+  _gramEnter();
+  renderGramQ();
+}
+
+// ━━━ stats tab ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function _renderGramStats() {
+  const body = document.getElementById('stats-tab-body');
+  if (!body) return;
+  const s = loadGramStats();
+  const n = s.total.c + s.total.w;
+  if (!n) {
+    body.innerHTML = `<div style="text-align:center;padding:40px 24px;color:var(--mid);font-size:14px;font-weight:700;line-height:2;">
+      🧠 لسه ما دربتش على القواعد.<br>ابدأ من "تدريب الأزمنة" أو "تدريب التحويل" في الصفحة الرئيسية.</div>`;
+    return;
+  }
+  const pct = Math.round((s.total.c / n) * 100);
+  const byTag = {};
+  Object.keys(s.tags).forEach(k => { byTag[k] = s.tags[k]; });
+  const weakWords = Object.keys(s.words).map(id => {
+    const x = s.words[id], t = x.c + x.w, w = mwData.words.find(v => v.id === id);
+    return { w, t, acc: t ? x.c / t : 1 };
+  }).filter(r => r.w && r.t >= 2 && r.acc < 0.7).sort((a, b) => a.acc - b.acc).slice(0, 8);
+  body.innerHTML = `<div style="padding:16px;">
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <div class="gs-group" style="flex:1;text-align:center;"><div style="font-size:26px;font-weight:900;color:var(--purple);">${n}</div><div class="gs-group-t" style="margin:0;">سؤال</div></div>
+      <div class="gs-group" style="flex:1;text-align:center;"><div style="font-size:26px;font-weight:900;color:var(--green-dark);">${pct}%</div><div class="gs-group-t" style="margin:0;">دقة</div></div>
+    </div>
+    <div class="gs-group"><div class="gs-group-t">الدقة حسب النوع</div>${gramBarsHTML(byTag)}</div>
+    ${weakWords.length ? `<div class="gs-group" style="margin-top:12px;"><div class="gs-group-t">🎯 كلمات محتاجة تركيز</div>
+      ${weakWords.map(r => `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:800;">
+        <span style="direction:ltr;font-family:'Nunito',sans-serif;">${escH(r.w.word)}</span><span style="color:var(--red);">${Math.round(r.acc * 100)}%</span></div>`).join('')}
+      <div style="font-size:11px;color:var(--mid);margin-top:8px;">فعّل "🎯 الأضعف أولاً" في إعدادات التدريب.</div></div>` : ''}
+    <button class="res-btn" style="background:#fee2e2;color:var(--red-dark);box-shadow:0 4px 0 #fecaca;margin-top:16px;" onclick="resetGramStats()">🗑 تصفير إحصائيات القواعد</button>
+  </div>`;
+}
+function resetGramStats() {
+  if (!confirm('هيتمسح تقدمك في تدريبات القواعد. متابع؟')) return;
+  try { localStorage.removeItem(GRAM_KEY); } catch (e) {}
+  renderStatsHome('gram');
+}
+// ━━━ END: SECTION 6B — GRAMMAR TRAINERS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 // ━━━ START: SECTION 7 — INIT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function resetProgress() {
   if (!confirm("هيتمسح كل التقدم (المراجعات والـ SR). الكلمات هتفضل. متابع؟")) return;
@@ -1943,6 +3018,7 @@ function resetProgress() {
 }
 function init() {
   loadMwData();
+  purgeOrphanProgress();
   renderMwScreen();
 }
 init();
@@ -2027,6 +3103,7 @@ function renderWfvTab() {
       <span class="wfv-type">${f.type}</span>
       <div class="wfv-trans">${f.translation}</div>
       ${f.when ? `<div class="wfv-when">📌 ${f.when}</div>` : ''}
+      ${f.sentence ? `<div class="wfv-when" style="direction:ltr;text-align:left;font-family:'Nunito',sans-serif;font-style:italic;">&ldquo;${f.sentence}&rdquo;</div>` : ''}
     </div>`).join('');
 }
 </script>
